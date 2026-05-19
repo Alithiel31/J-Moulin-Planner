@@ -2,7 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import cors from 'cors';
-import xss from 'express-xss-sanitizer';
+import { xss } from 'express-xss-sanitizer';
 import rateLimit from 'express-rate-limit';
 import { config } from './config';
 import { logger } from './lib/logger';
