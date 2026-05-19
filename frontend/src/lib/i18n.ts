@@ -73,7 +73,7 @@ const fr: Record<string, string> = {
 	'users.team': 'Équipe',
 	'users.no_users': 'Aucun utilisateur',
 	'users.role.admin': 'Administrateur',
-	'users.role.teamlead': 'Chef d'équipe',
+	'users.role.teamlead': "Chef d'équipe",
 	'users.role.teammate': 'Membre',
 
 	'events.title': 'Événements',

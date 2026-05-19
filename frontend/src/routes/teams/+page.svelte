@@ -138,11 +138,7 @@
 		<div class="space-y-3">
 			{#each teams as team}
 				<div class="card overflow-hidden">
-					<button
-						class="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors text-left"
-						onclick={() => (expandedId = expandedId === team.id ? null : team.id)}
-						aria-expanded={expandedId === team.id}
-					>
+					<div class="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors">
 						<div
 							class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center shrink-0"
 							aria-hidden="true"
@@ -150,7 +146,12 @@
 							<Users size={18} class="text-blue-600" />
 						</div>
 
-						<div class="flex-1 min-w-0">
+						<!-- Clickable info zone -->
+						<button
+							class="flex-1 min-w-0 text-left"
+							onclick={() => (expandedId = expandedId === team.id ? null : team.id)}
+							aria-expanded={expandedId === team.id}
+						>
 							<h2 class="font-semibold text-slate-900">{team.name}</h2>
 							<p class="text-xs text-slate-500">
 								{team._count?.members ?? team.members?.length ?? 0} {$t('teams.members')} ·
@@ -159,33 +160,38 @@
 									· {$t('teams.lead')}: {team.lead.username}
 								{/if}
 							</p>
-						</div>
+						</button>
 
 						{#if auth.isAdmin}
-							<div class="flex items-center gap-1" onclick={(e) => e.stopPropagation()}>
-								<button
-									class="btn-ghost p-1.5 rounded"
-									onclick={() => openEdit(team)}
-									aria-label="{$t('teams.edit')} {team.name}"
-								>
-									<Pencil size={15} />
-								</button>
-								<button
-									class="btn-ghost p-1.5 rounded hover:text-rose-600"
-									onclick={() => (deleteTeam = team)}
-									aria-label="{$t('teams.delete')} {team.name}"
-								>
-									<Trash2 size={15} />
-								</button>
-							</div>
+							<button
+								class="btn-ghost p-1.5 rounded"
+								onclick={() => openEdit(team)}
+								aria-label="{$t('teams.edit')} {team.name}"
+							>
+								<Pencil size={15} />
+							</button>
+							<button
+								class="btn-ghost p-1.5 rounded hover:text-rose-600"
+								onclick={() => (deleteTeam = team)}
+								aria-label="{$t('teams.delete')} {team.name}"
+							>
+								<Trash2 size={15} />
+							</button>
 						{/if}
 
-						{#if expandedId === team.id}
-							<ChevronUp size={18} class="text-slate-400 shrink-0" aria-hidden="true" />
-						{:else}
-							<ChevronDown size={18} class="text-slate-400 shrink-0" aria-hidden="true" />
-						{/if}
-					</button>
+						<button
+							class="btn-ghost p-1.5 rounded"
+							onclick={() => (expandedId = expandedId === team.id ? null : team.id)}
+							aria-expanded={expandedId === team.id}
+							aria-label={expandedId === team.id ? 'Réduire' : 'Développer'}
+						>
+							{#if expandedId === team.id}
+								<ChevronUp size={18} class="text-slate-400" aria-hidden="true" />
+							{:else}
+								<ChevronDown size={18} class="text-slate-400" aria-hidden="true" />
+							{/if}
+						</button>
+					</div>
 
 					{#if expandedId === team.id && team.members}
 						<div class="border-t border-slate-100 px-4 pb-4 pt-3">

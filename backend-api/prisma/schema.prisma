@@ -1,0 +1,209 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  role      String   @default("teammate") // admin, teamlead, teammate
+  teamId    String?
+  team      Team?    @relation("members", fields: [teamId], references: [id], onDelete: SetNull)
+
+  // Pour les TeamLead: les équipes qu'ils créent
+  leadsTeam Team?    @relation("leadBy")
+
+  // Tâches assignées
+  assignedTasks TaskAssignee[]
+
+  // Tâches créées/possédées
+  createdTasks Task[] @relation("createdBy")
+
+  // Comments créés
+  comments Comment[]
+
+  // Events créés
+  createdEvents Event[] @relation("createdBy")
+
+  // Event attendees
+  eventAttendees EventAttendee[]
+
+  // Attachments uploadés
+  uploadedAttachments Attachment[]
+
+  // Activity logs
+  activityLogs ActivityLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([teamId])
+  @@index([role])
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  leadId    String   @unique
+  lead      User     @relation("leadBy", fields: [leadId], references: [id], onDelete: Cascade)
+
+  members   User[]   @relation("members")
+  tasks     Task[]
+  events    Event[]
+  activityLogs ActivityLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([leadId])
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String   @default("Autre")
+
+  startDate   DateTime?
+  deadline    DateTime
+  priority    String   @default("medium") // low, medium, high
+  status      String   @default("todo") // todo, in_progress, done
+
+  createdById String
+  createdBy   User     @relation("createdBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  teamId      String?
+  team        Team?    @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  assignees   TaskAssignee[]
+  comments    Comment[]
+  attachments Attachment[]
+  activityLogs ActivityLog[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdById])
+  @@index([teamId])
+  @@index([deadline])
+  @@index([status])
+}
+
+model TaskAssignee {
+  id        String @id @default(cuid())
+  taskId    String
+  task      Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([taskId, userId])
+  @@index([userId])
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  location    String?
+
+  createdById String
+  createdBy   User     @relation("createdBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  teamId      String?
+  team        Team?    @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  attendees   EventAttendee[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdById])
+  @@index([teamId])
+  @@index([startDate])
+}
+
+model EventAttendee {
+  id        String @id @default(cuid())
+  eventId   String
+  event     Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  userId    String
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([eventId, userId])
+  @@index([userId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([taskId])
+  @@index([authorId])
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  name      String
+  fileName  String
+  mimeType  String
+  size      Int
+
+  taskId    String
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  uploadedById String
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([taskId])
+  @@index([uploadedById])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  action    String   // created, updated, deleted, commented, etc.
+  entityType String  // task, team, comment, attachment, event
+  entityId  String
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  taskId    String?
+  task      Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  teamId    String?
+  team      Team?    @relation(fields: [teamId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([taskId])
+  @@index([teamId])
+  @@index([createdAt])
+}
