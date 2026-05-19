@@ -1,0 +1,13 @@
+node_modules
+npm-debug.log
+build
+dist
+.svelte-kit
+.git
+.gitignore
+.DS_Store
+*.md
+.env
+.env.local
+.eslintrc.json
+prettier.config.js

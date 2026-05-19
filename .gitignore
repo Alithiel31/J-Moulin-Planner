@@ -1,0 +1,30 @@
+# Env
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# Build
+/build
+/.svelte-kit
+/dist
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.nyc_output
+/coverage
+
+# Prisma
+.env.test.local
+/prisma/migrations/
