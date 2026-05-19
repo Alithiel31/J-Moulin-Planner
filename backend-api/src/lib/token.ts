@@ -11,7 +11,8 @@ export interface JWTPayload {
 
 export const token = {
   sign: (payload: Omit<JWTPayload, 'iat' | 'exp'>, expiresIn = '7d') => {
-    return jwt.sign(payload, config.jwtSecret, { expiresIn });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return jwt.sign(payload, config.jwtSecret, { expiresIn: expiresIn as any });
   },
 
   verify: (token: string): JWTPayload => {

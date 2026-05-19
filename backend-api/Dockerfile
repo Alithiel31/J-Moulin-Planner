@@ -12,6 +12,9 @@ COPY src ./src/
 # Install dependencies
 RUN npm install
 
+# Generate Prisma client (required before tsc)
+RUN npx prisma generate
+
 # Build TypeScript
 RUN npm run build
 

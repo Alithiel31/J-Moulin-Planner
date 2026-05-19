@@ -20,7 +20,7 @@ COPY src ./src
 COPY public ./public
 
 # Build the application
-RUN pnpm run build
+RUN npm run build
 
 # Runtime stage
 FROM node:22-alpine
@@ -48,4 +48,4 @@ EXPOSE 3000
 ENTRYPOINT ["dumb-init", "--"]
 
 # Start the application using Vite preview
-CMD ["pnpm", "run", "preview"]
+CMD ["npm", "run", "preview"]
