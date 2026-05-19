@@ -32,6 +32,9 @@ COPY prisma.config.ts ./
 # Install production dependencies (includes prisma CLI for db push at startup)
 RUN npm install --only=production
 
+# Copy generated Prisma client from builder (prisma generate output lives in .prisma/client)
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+
 # Copy built application
 COPY --from=builder /app/dist ./dist/
 
