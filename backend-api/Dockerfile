@@ -3,19 +3,15 @@ FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 COPY src ./src/
 
-# Install dependencies
 RUN npm install
 
-# Provide a dummy URL so prisma generate can parse the schema without a live DB
-ENV DATABASE_URL="postgresql://build:build@localhost:5432/build"
-
-# Generate Prisma client (required before tsc)
+# Generate Prisma client (schema has no url; prisma.config.ts supplies the adapter at runtime)
 RUN npx prisma generate
 
 # Build TypeScript
@@ -26,15 +22,14 @@ FROM node:22-alpine
 
 WORKDIR /app
 
-# Install dumb-init for proper signal handling
 RUN apk add --no-cache dumb-init
 
-# Copy package files
 COPY package*.json ./
 COPY package-lock.json* ./
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 
-# Install production dependencies only
+# Install production dependencies (includes prisma CLI for db push at startup)
 RUN npm install --only=production
 
 # Copy built application
@@ -47,7 +42,7 @@ USER node
 
 EXPOSE 3000
 
-# Use dumb-init to handle signals properly
 ENTRYPOINT ["dumb-init", "--"]
 
-CMD ["node", "dist/index.js"]
+# Sync schema to DB on every start (no-op if already up to date), then launch
+CMD ["sh", "-c", "npx prisma db push && node dist/index.js"]
