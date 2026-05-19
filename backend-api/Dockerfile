@@ -12,6 +12,9 @@ COPY src ./src/
 # Install dependencies
 RUN npm install
 
+# Provide a dummy URL so prisma generate can parse the schema without a live DB
+ENV DATABASE_URL="postgresql://build:build@localhost:5432/build"
+
 # Generate Prisma client (required before tsc)
 RUN npx prisma generate
 
