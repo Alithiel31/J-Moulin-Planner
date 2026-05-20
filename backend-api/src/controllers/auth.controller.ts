@@ -45,7 +45,8 @@ export const authController = {
     res.cookie('auth', authToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      // SameSite=None is required for cross-domain requests (Railway: client.up.railway.app → api.up.railway.app)
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
@@ -77,7 +78,7 @@ export const authController = {
     res.cookie('auth', authToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
