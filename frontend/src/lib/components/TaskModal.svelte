@@ -52,14 +52,16 @@
 					assignees: task.assignees?.map((a) => a.user.id) ?? []
 				};
 			} else {
+				const today = new Date().toISOString().slice(0, 10);
+				const inTwoDays = new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 10);
 				form = {
 					title: '',
 					description: '',
 					category: '',
 					status: 'todo',
 					priority: 'medium',
-					deadline: '',
-					startDate: '',
+					deadline: inTwoDays,
+					startDate: today,
 					teamId: teams[0]?.id ?? '',
 					assignees: []
 				};
@@ -79,7 +81,7 @@
 	async function loadTeamMembers(teamId: string) {
 		try {
 			const res = await api.get(`/teams/${teamId}`);
-			teamMembers = res.data.data.members ?? [];
+			teamMembers = res.data.data.team?.members ?? [];
 		} catch {
 			teamMembers = [];
 		}

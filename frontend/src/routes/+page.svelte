@@ -53,9 +53,9 @@
 				api.get('/events'),
 				api.get('/teams')
 			]);
-			tasks = tasksRes.data.data;
-			events = eventsRes.data.data;
-			teams = teamsRes.data.data;
+			tasks = tasksRes.data.data.tasks;
+			events = eventsRes.data.data.events;
+			teams = teamsRes.data.data.teams;
 		} catch {
 			error = $t('common.error');
 		} finally {

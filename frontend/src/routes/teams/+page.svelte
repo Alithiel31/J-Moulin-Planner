@@ -92,10 +92,10 @@
 		try {
 			const [teamsRes, usersRes] = await Promise.all([
 				api.get('/teams'),
-				auth.isAdmin ? api.get('/users') : Promise.resolve({ data: { data: [] } })
+				auth.isAdmin ? api.get('/users') : Promise.resolve({ data: { data: { users: [] } } })
 			]);
-			teams = teamsRes.data.data;
-			allUsers = usersRes.data.data;
+			teams = teamsRes.data.data.teams;
+			allUsers = usersRes.data.data.users;
 		} catch {
 			error = $t('common.error');
 		}

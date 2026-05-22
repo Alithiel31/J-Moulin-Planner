@@ -47,8 +47,13 @@
 		editingEvent = null;
 		formTitle = '';
 		formDescription = '';
-		formStart = '';
-		formEnd = '';
+		const now = new Date();
+		const pad = (n: number) => String(n).padStart(2, '0');
+		const localNow = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+		const inOneHour = new Date(now.getTime() + 3600000);
+		const localEnd = `${inOneHour.getFullYear()}-${pad(inOneHour.getMonth() + 1)}-${pad(inOneHour.getDate())}T${pad(inOneHour.getHours())}:${pad(inOneHour.getMinutes())}`;
+		formStart = localNow;
+		formEnd = localEnd;
 		formError = '';
 		formOpen = true;
 	}
@@ -106,7 +111,7 @@
 
 	async function loadData() {
 		const res = await api.get('/events');
-		events = res.data.data;
+		events = res.data.data.events;
 	}
 
 	onMount(async () => {

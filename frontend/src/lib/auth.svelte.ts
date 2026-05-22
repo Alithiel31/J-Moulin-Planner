@@ -8,7 +8,7 @@ class AuthStore {
 	async init(): Promise<void> {
 		try {
 			const res = await api.get('/auth/me');
-			this.user = res.data.data;
+			this.user = res.data.data.user ?? null;
 		} catch {
 			this.user = null;
 		} finally {

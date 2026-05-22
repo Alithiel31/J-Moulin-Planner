@@ -35,7 +35,7 @@
 		}
 		try {
 			const res = await api.get('/activity-logs');
-			logs = res.data.data;
+			logs = res.data.data.logs;
 		} catch {
 			error = $t('common.error');
 		} finally {

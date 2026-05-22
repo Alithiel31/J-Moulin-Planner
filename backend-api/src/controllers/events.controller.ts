@@ -3,11 +3,16 @@ import { z } from 'zod';
 import { prisma } from '../lib/db';
 import { NotFoundError, ValidationError, AuthorizationError } from '../lib/errors';
 
+// Accept both full ISO datetime ("2026-05-22T00:00:00Z") and date-only ("2026-05-22")
+const isoDatetime = z.string().transform((val) =>
+  /^\d{4}-\d{2}-\d{2}$/.test(val) ? `${val}T00:00:00.000Z` : val
+);
+
 const createEventSchema = z.object({
   title: z.string().min(1).max(255),
   description: z.string().optional(),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime(),
+  startDate: isoDatetime,
+  endDate: isoDatetime.optional(),
   location: z.string().optional(),
   teamId: z.string().optional(),
   attendees: z.array(z.string()).optional(),
@@ -53,10 +58,13 @@ export const eventsController = {
     }
 
     const body = createEventSchema.parse(req.body);
+    // Default endDate to startDate + 1 hour if not provided
+    const endDate = body.endDate ?? new Date(new Date(body.startDate).getTime() + 3600000).toISOString();
 
     const event = await prisma.event.create({
       data: {
         ...body,
+        endDate,
         createdById: req.user.userId,
         attendees: body.attendees
           ? {

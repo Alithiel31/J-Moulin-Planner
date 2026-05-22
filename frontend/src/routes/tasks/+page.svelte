@@ -96,8 +96,8 @@
 				api.get('/tasks'),
 				api.get('/teams')
 			]);
-			tasks = tasksRes.data.data;
-			teams = teamsRes.data.data;
+			tasks = tasksRes.data.data.tasks;
+			teams = teamsRes.data.data.teams;
 		} catch {
 			error = $t('common.error');
 		}

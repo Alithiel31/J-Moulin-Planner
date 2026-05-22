@@ -57,8 +57,8 @@
 				api.get('/users'),
 				api.get('/teams')
 			]);
-			users = usersRes.data.data;
-			teams = teamsRes.data.data;
+			users = usersRes.data.data.users;
+			teams = teamsRes.data.data.teams;
 		} catch {
 			error = $t('common.error');
 		} finally {

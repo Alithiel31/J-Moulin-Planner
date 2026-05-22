@@ -3,12 +3,17 @@ import { z } from 'zod';
 import { prisma } from '../lib/db';
 import { NotFoundError, ValidationError, AuthorizationError } from '../lib/errors';
 
+// Accept both full ISO datetime ("2026-05-22T00:00:00Z") and date-only ("2026-05-22")
+const isoDatetime = z.string().transform((val) =>
+  /^\d{4}-\d{2}-\d{2}$/.test(val) ? `${val}T00:00:00.000Z` : val
+);
+
 const createTaskSchema = z.object({
   title: z.string().min(1).max(255),
   description: z.string().optional(),
   category: z.string().default('Autre'),
-  startDate: z.string().datetime().optional(),
-  deadline: z.string().datetime(),
+  startDate: isoDatetime.optional(),
+  deadline: isoDatetime,
   priority: z.enum(['low', 'medium', 'high']).default('medium'),
   teamId: z.string().optional(),
   assignees: z.array(z.string()).optional(),

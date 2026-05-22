@@ -4,7 +4,7 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-COPY tsconfig.json vite.config.ts svelte.config.js ./
+COPY tsconfig.json vite.config.ts svelte.config.js postcss.config.js tailwind.config.js ./
 
 RUN npm install
 
@@ -45,5 +45,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
 
 ENTRYPOINT ["dumb-init", "--"]
 
-# adapter-node entry point (not "node build" — that runs the directory, not the file)
 CMD ["node", "build/index.js"]
