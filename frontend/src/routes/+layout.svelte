@@ -1,65 +1,47 @@
 <script lang="ts">
-  import '../app.css';
-  import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
-  import { auth, isAuthenticated } from '$lib/stores';
-  import { Navbar } from '$lib/components';
+	import '../app.css';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { Loader2 } from 'lucide-svelte';
+	import { auth } from '$lib/auth.svelte.js';
+	import Sidebar from '$lib/components/Sidebar.svelte';
 
-  let isInitializing = true;
+	const { children } = $props();
 
-  onMount(async () => {
-    try {
-      await auth.init();
-    } finally {
-      isInitializing = false;
-    }
-  });
+	onMount(async () => {
+		await auth.init();
+	});
 
-  const handleLogout = async () => {
-    try {
-      await auth.logout();
-      goto('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+	$effect(() => {
+		if (!auth.loading) {
+			const isLogin = $page.url.pathname === '/login';
+			if (!auth.user && !isLogin) {
+				goto('/login');
+			} else if (auth.user && isLogin) {
+				goto('/');
+			}
+		}
+	});
+
+	const isLoginPage = $derived($page.url.pathname === '/login');
 </script>
 
-<svelte:window
-  on:keydown={(e) => {
-    // Keyboard shortcuts
-    if (e.key === 'Escape') {
-      // Could be used for closing modals, etc.
-    }
-  }}
-/>
-
-<div class="min-h-screen bg-gray-50">
-  {#if !isInitializing}
-    <Navbar
-      user={$auth.user || undefined}
-      isLoading={$auth.isLoading}
-      onLogout={handleLogout}
-      onDashboard={() => goto('/dashboard')}
-      onTasks={() => goto('/tasks')}
-      onTeams={() => goto('/teams')}
-      onEvents={() => goto('/events')}
-      onActivity={() => goto('/activity')}
-      onSearch={() => goto('/search')}
-      onProfile={() => goto('/profile')}
-      onSettings={() => goto('/settings')}
-      onTimeline={() => goto('/timeline')}
-    />
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <slot />
-    </main>
-  {:else}
-    <div class="flex items-center justify-center min-h-screen">
-      <div class="text-center">
-        <div class="animate-spin text-4xl">⏳</div>
-        <p class="text-gray-600 mt-4">Loading...</p>
-      </div>
-    </div>
-  {/if}
-</div>
+{#if auth.loading}
+	<div class="min-h-screen flex items-center justify-center bg-slate-50">
+		<Loader2 size={32} class="animate-spin text-blue-600" aria-label="Chargement" />
+	</div>
+{:else if isLoginPage}
+	{@render children()}
+{:else if auth.user}
+	<div class="flex h-screen bg-slate-50">
+		<Sidebar />
+		<main class="flex-1 overflow-auto focus:outline-none" tabindex="-1">
+			{@render children()}
+		</main>
+	</div>
+{:else}
+	<div class="min-h-screen flex items-center justify-center bg-slate-50">
+		<Loader2 size={32} class="animate-spin text-blue-600" aria-label="Redirection" />
+	</div>
+{/if}
