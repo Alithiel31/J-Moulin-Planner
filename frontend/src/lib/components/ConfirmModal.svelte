@@ -7,7 +7,7 @@
 		title = '',
 		message = '',
 		onconfirm,
-		oncancel
+		oncancel,
 	}: {
 		open?: boolean;
 		title?: string;

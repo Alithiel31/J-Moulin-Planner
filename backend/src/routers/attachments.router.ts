@@ -39,12 +39,7 @@ const upload = multer({
 
 router.get('/task/:taskId', asyncHandler(attachmentsController.getByTaskId));
 router.get('/:id', asyncHandler(attachmentsController.getById));
-router.post(
-  '/',
-  authMiddleware,
-  upload.single('file'),
-  asyncHandler(attachmentsController.upload),
-);
+router.post('/', authMiddleware, upload.single('file'), asyncHandler(attachmentsController.upload));
 router.delete('/:id', authMiddleware, asyncHandler(attachmentsController.delete));
 
 export default router;

@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { CheckCircle2, Clock, Circle, Users, CalendarDays, AlertTriangle, Loader2 } from 'lucide-svelte';
+	import {
+		CheckCircle2,
+		Clock,
+		Circle,
+		Users,
+		CalendarDays,
+		AlertTriangle,
+		Loader2,
+	} from 'lucide-svelte';
 	import { t } from '$lib/i18n.js';
 	import api from '$lib/api.js';
 	import { auth } from '$lib/auth.svelte.js';
@@ -18,9 +26,8 @@
 	const inProgress = $derived(tasks.filter((t) => t.status === 'in_progress').length);
 	const done = $derived(tasks.filter((t) => t.status === 'done').length);
 	const overdue = $derived(
-		tasks.filter(
-			(t) => t.deadline && new Date(t.deadline) < new Date() && t.status !== 'done'
-		).length
+		tasks.filter((t) => t.deadline && new Date(t.deadline) < new Date() && t.status !== 'done')
+			.length
 	);
 
 	const recentTasks = $derived(
@@ -42,7 +49,7 @@
 		return new Date(iso).toLocaleDateString(locale, {
 			day: 'numeric',
 			month: 'short',
-			year: 'numeric'
+			year: 'numeric',
 		});
 	}
 
@@ -51,7 +58,7 @@
 			const [tasksRes, eventsRes, teamsRes] = await Promise.all([
 				api.get('/tasks'),
 				api.get('/events'),
-				api.get('/teams')
+				api.get('/teams'),
 			]);
 			tasks = tasksRes.data.data.tasks;
 			events = eventsRes.data.data.events;
@@ -86,43 +93,64 @@
 		</div>
 	{:else}
 		<!-- Stat cards -->
-		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8" role="list" aria-label="Statistiques">
+		<div
+			class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8"
+			role="list"
+			aria-label="Statistiques"
+		>
 			<div class="stat-card" role="listitem">
-				<span class="text-xs font-medium text-slate-500 uppercase tracking-wide">{$t('dashboard.total_tasks')}</span>
+				<span class="text-xs font-medium text-slate-500 uppercase tracking-wide"
+					>{$t('dashboard.total_tasks')}</span
+				>
 				<span class="text-3xl font-bold text-slate-900">{tasks.length}</span>
 			</div>
 
 			<div class="stat-card border-l-4 border-l-slate-400" role="listitem">
-				<span class="flex items-center gap-1 text-xs font-medium text-slate-500 uppercase tracking-wide">
-					<Circle size={12} aria-hidden="true" /> {$t('status.todo')}
+				<span
+					class="flex items-center gap-1 text-xs font-medium text-slate-500 uppercase tracking-wide"
+				>
+					<Circle size={12} aria-hidden="true" />
+					{$t('status.todo')}
 				</span>
 				<span class="text-3xl font-bold text-slate-700">{todo}</span>
 			</div>
 
 			<div class="stat-card border-l-4 border-l-amber-400" role="listitem">
-				<span class="flex items-center gap-1 text-xs font-medium text-amber-700 uppercase tracking-wide">
-					<Clock size={12} aria-hidden="true" /> {$t('status.in_progress')}
+				<span
+					class="flex items-center gap-1 text-xs font-medium text-amber-700 uppercase tracking-wide"
+				>
+					<Clock size={12} aria-hidden="true" />
+					{$t('status.in_progress')}
 				</span>
 				<span class="text-3xl font-bold text-amber-800">{inProgress}</span>
 			</div>
 
 			<div class="stat-card border-l-4 border-l-teal-400" role="listitem">
-				<span class="flex items-center gap-1 text-xs font-medium text-teal-700 uppercase tracking-wide">
-					<CheckCircle2 size={12} aria-hidden="true" /> {$t('status.done')}
+				<span
+					class="flex items-center gap-1 text-xs font-medium text-teal-700 uppercase tracking-wide"
+				>
+					<CheckCircle2 size={12} aria-hidden="true" />
+					{$t('status.done')}
 				</span>
 				<span class="text-3xl font-bold text-teal-800">{done}</span>
 			</div>
 
 			<div class="stat-card border-l-4 border-l-orange-400" role="listitem">
-				<span class="flex items-center gap-1 text-xs font-medium text-orange-700 uppercase tracking-wide">
-					<AlertTriangle size={12} aria-hidden="true" /> {$t('dashboard.overdue')}
+				<span
+					class="flex items-center gap-1 text-xs font-medium text-orange-700 uppercase tracking-wide"
+				>
+					<AlertTriangle size={12} aria-hidden="true" />
+					{$t('dashboard.overdue')}
 				</span>
 				<span class="text-3xl font-bold text-orange-800">{overdue}</span>
 			</div>
 
 			<div class="stat-card border-l-4 border-l-blue-400" role="listitem">
-				<span class="flex items-center gap-1 text-xs font-medium text-blue-700 uppercase tracking-wide">
-					<Users size={12} aria-hidden="true" /> {$t('dashboard.total_teams')}
+				<span
+					class="flex items-center gap-1 text-xs font-medium text-blue-700 uppercase tracking-wide"
+				>
+					<Users size={12} aria-hidden="true" />
+					{$t('dashboard.total_teams')}
 				</span>
 				<span class="text-3xl font-bold text-blue-800">{teams.length}</span>
 			</div>
@@ -131,7 +159,9 @@
 		<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 			<!-- Recent tasks -->
 			<section class="lg:col-span-2 card p-5" aria-labelledby="recent-tasks-heading">
-				<h2 id="recent-tasks-heading" class="font-semibold text-slate-900 mb-4">{$t('dashboard.recent_tasks')}</h2>
+				<h2 id="recent-tasks-heading" class="font-semibold text-slate-900 mb-4">
+					{$t('dashboard.recent_tasks')}
+				</h2>
 				{#if recentTasks.length === 0}
 					<p class="text-slate-400 text-sm">{$t('dashboard.no_recent_tasks')}</p>
 				{:else}
@@ -143,7 +173,9 @@
 									class="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group"
 								>
 									<StatusBadge status={task.status} />
-									<span class="flex-1 text-sm font-medium text-slate-800 truncate group-hover:text-blue-700">
+									<span
+										class="flex-1 text-sm font-medium text-slate-800 truncate group-hover:text-blue-700"
+									>
 										{task.title}
 									</span>
 									<PriorityBadge priority={task.priority} />
@@ -167,7 +199,9 @@
 				<section class="card p-5" aria-labelledby="events-heading">
 					<div class="flex items-center gap-2 mb-4">
 						<CalendarDays size={16} class="text-slate-500" aria-hidden="true" />
-						<h2 id="events-heading" class="font-semibold text-slate-900">{$t('dashboard.upcoming_events')}</h2>
+						<h2 id="events-heading" class="font-semibold text-slate-900">
+							{$t('dashboard.upcoming_events')}
+						</h2>
 					</div>
 					{#if upcomingEvents.length === 0}
 						<p class="text-slate-400 text-sm">{$t('dashboard.no_upcoming_events')}</p>
@@ -191,14 +225,17 @@
 					<section class="card p-5" aria-labelledby="teams-heading">
 						<div class="flex items-center gap-2 mb-4">
 							<Users size={16} class="text-slate-500" aria-hidden="true" />
-							<h2 id="teams-heading" class="font-semibold text-slate-900">{$t('dashboard.my_teams')}</h2>
+							<h2 id="teams-heading" class="font-semibold text-slate-900">
+								{$t('dashboard.my_teams')}
+							</h2>
 						</div>
 						<ul class="space-y-1">
 							{#each teams.slice(0, 4) as team}
 								<li class="flex items-center justify-between py-1">
 									<span class="text-sm font-medium text-slate-800">{team.name}</span>
 									<span class="text-xs text-slate-500">
-										{team._count?.members ?? team.members?.length ?? 0} {$t('teams.members')}
+										{team._count?.members ?? team.members?.length ?? 0}
+										{$t('teams.members')}
 									</span>
 								</li>
 							{/each}

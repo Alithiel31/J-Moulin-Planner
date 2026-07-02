@@ -53,10 +53,7 @@
 			return;
 		}
 		try {
-			const [usersRes, teamsRes] = await Promise.all([
-				api.get('/users'),
-				api.get('/teams')
-			]);
+			const [usersRes, teamsRes] = await Promise.all([api.get('/users'), api.get('/teams')]);
 			users = usersRes.data.data.users;
 			teams = teamsRes.data.data.teams;
 		} catch {
@@ -95,9 +92,13 @@
 				<thead>
 					<tr class="border-b border-slate-200 bg-slate-50">
 						<th class="text-left px-4 py-3 font-medium text-slate-600">{$t('users.username')}</th>
-						<th class="text-left px-4 py-3 font-medium text-slate-600 hidden sm:table-cell">{$t('users.email')}</th>
+						<th class="text-left px-4 py-3 font-medium text-slate-600 hidden sm:table-cell"
+							>{$t('users.email')}</th
+						>
 						<th class="text-left px-4 py-3 font-medium text-slate-600">{$t('users.role')}</th>
-						<th class="text-left px-4 py-3 font-medium text-slate-600 hidden md:table-cell">{$t('users.team')}</th>
+						<th class="text-left px-4 py-3 font-medium text-slate-600 hidden md:table-cell"
+							>{$t('users.team')}</th
+						>
 						<th class="text-right px-4 py-3 font-medium text-slate-600">{$t('common.actions')}</th>
 					</tr>
 				</thead>
@@ -114,7 +115,8 @@
 									</span>
 									<span class="font-medium text-slate-900">{user.username}</span>
 									{#if user.id === auth.user?.id}
-										<span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Vous</span>
+										<span class="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Vous</span
+										>
 									{/if}
 								</div>
 							</td>
@@ -133,7 +135,9 @@
 										{/each}
 									</select>
 								{:else}
-									<span class="text-xs text-slate-600 capitalize">{$t(`users.role.${user.role}`)}</span>
+									<span class="text-xs text-slate-600 capitalize"
+										>{$t(`users.role.${user.role}`)}</span
+									>
 								{/if}
 							</td>
 							<td class="px-4 py-3 text-slate-500 hidden md:table-cell">{teamName(user.teamId)}</td>
@@ -156,8 +160,4 @@
 	{/if}
 </div>
 
-<ConfirmModal
-	open={!!deleteUser}
-	onconfirm={confirmDelete}
-	oncancel={() => (deleteUser = null)}
-/>
+<ConfirmModal open={!!deleteUser} onconfirm={confirmDelete} oncancel={() => (deleteUser = null)} />

@@ -6,7 +6,7 @@ export const logActivity = async (
   entityType: 'task' | 'team' | 'comment' | 'attachment' | 'event',
   entityId: string,
   taskId?: string,
-  teamId?: string,
+  teamId?: string
 ) => {
   try {
     await prisma.activityLog.create({

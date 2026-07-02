@@ -5,9 +5,9 @@ import { config } from '../config';
 import { NotFoundError, ValidationError, AuthorizationError } from '../lib/errors';
 
 // Accept both full ISO datetime ("2026-05-22T00:00:00Z") and date-only ("2026-05-22")
-const isoDatetime = z.string().transform((val) =>
-  /^\d{4}-\d{2}-\d{2}$/.test(val) ? `${val}T00:00:00.000Z` : val
-);
+const isoDatetime = z
+  .string()
+  .transform((val) => (/^\d{4}-\d{2}-\d{2}$/.test(val) ? `${val}T00:00:00.000Z` : val));
 
 const createEventSchema = z.object({
   title: z.string().min(1).max(255),
@@ -24,7 +24,10 @@ const updateEventSchema = createEventSchema.partial();
 export const eventsController = {
   getAll: async (req: Request, res: Response) => {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const [events, total] = await prisma.$transaction([
@@ -75,7 +78,8 @@ export const eventsController = {
 
     const body = createEventSchema.parse(req.body);
     // Default endDate to startDate + 1 hour if not provided
-    const endDate = body.endDate ?? new Date(new Date(body.startDate).getTime() + 3600000).toISOString();
+    const endDate =
+      body.endDate ?? new Date(new Date(body.startDate).getTime() + 3600000).toISOString();
 
     if (new Date(endDate) < new Date(body.startDate)) {
       throw new ValidationError('endDate must be after startDate');

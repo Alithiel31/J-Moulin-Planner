@@ -27,7 +27,7 @@ app.use(
   cors({
     origin: config.corsOrigin,
     credentials: true,
-  }),
+  })
 );
 
 // Rate limiting

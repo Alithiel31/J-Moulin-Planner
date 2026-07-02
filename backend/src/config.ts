@@ -25,7 +25,7 @@ export const config = {
 // serious security hole if ever shipped to prod).
 if (config.isProd && (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32)) {
   console.error(
-    '❌ JWT_SECRET is missing or too short (< 32 chars) in production. Set a strong secret via the JWT_SECRET environment variable.',
+    '❌ JWT_SECRET is missing or too short (< 32 chars) in production. Set a strong secret via the JWT_SECRET environment variable.'
   );
   process.exit(1);
 }

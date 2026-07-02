@@ -12,7 +12,7 @@
 		task = null,
 		teams = [],
 		onclose,
-		onsaved
+		onsaved,
 	}: {
 		open?: boolean;
 		task?: Task | null;
@@ -34,7 +34,7 @@
 		deadline: '',
 		startDate: '',
 		teamId: '',
-		assignees: [] as string[]
+		assignees: [] as string[],
 	});
 
 	$effect(() => {
@@ -49,7 +49,7 @@
 					deadline: task.deadline ? task.deadline.slice(0, 10) : '',
 					startDate: task.startDate ? task.startDate.slice(0, 10) : '',
 					teamId: task.teamId,
-					assignees: task.assignees?.map((a) => a.user.id) ?? []
+					assignees: task.assignees?.map((a) => a.user.id) ?? [],
 				};
 			} else {
 				const today = new Date().toISOString().slice(0, 10);
@@ -63,7 +63,7 @@
 					deadline: inTwoDays,
 					startDate: today,
 					teamId: teams[0]?.id ?? '',
-					assignees: []
+					assignees: [],
 				};
 			}
 			error = '';
@@ -112,7 +112,7 @@
 				deadline: form.deadline || undefined,
 				startDate: form.startDate || undefined,
 				teamId: form.teamId,
-				assignees: form.assignees
+				assignees: form.assignees,
 			};
 
 			if (task) {
@@ -157,7 +157,13 @@
 				</div>
 			{/if}
 
-			<form onsubmit={(e) => { e.preventDefault(); submit(); }} class="space-y-4">
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					submit();
+				}}
+				class="space-y-4"
+			>
 				<!-- Title -->
 				<div>
 					<label class="label" for="task-title">
@@ -179,11 +185,7 @@
 						{$t('tasks.description')}
 						<span class="text-slate-400 font-normal">({$t('common.optional')})</span>
 					</label>
-					<textarea
-						id="task-desc"
-						class="input resize-none"
-						rows="3"
-						bind:value={form.description}
+					<textarea id="task-desc" class="input resize-none" rows="3" bind:value={form.description}
 					></textarea>
 				</div>
 

@@ -1,0 +1,12 @@
+{
+  "name": "jmoulin-planner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Planificateur J.Moulin — monorepo (backend + frontend)",
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

@@ -8,7 +8,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
   if (err instanceof z.ZodError) {
     return res.status(400).json({
       success: false,
-      message: err.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join(', '),
+      message: err.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join(', '),
       statusCode: 400,
     });
   }

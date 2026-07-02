@@ -114,7 +114,7 @@ const fr: Record<string, string> = {
 	'common.title_field': 'Titre',
 	'common.all': 'Tous',
 	'common.optional': 'Optionnel',
-	'common.required': 'Requis'
+	'common.required': 'Requis',
 };
 
 const en: Record<string, string> = {
@@ -229,7 +229,7 @@ const en: Record<string, string> = {
 	'common.title_field': 'Title',
 	'common.all': 'All',
 	'common.optional': 'Optional',
-	'common.required': 'Required'
+	'common.required': 'Required',
 };
 
 const dict: Record<Locale, Record<string, string>> = { fr, en };

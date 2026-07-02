@@ -27,8 +27,7 @@
 
 	const filtered = $derived(
 		tasks.filter((task) => {
-			const matchSearch =
-				!search || task.title.toLowerCase().includes(search.toLowerCase());
+			const matchSearch = !search || task.title.toLowerCase().includes(search.toLowerCase());
 			const matchStatus = !filterStatus || task.status === filterStatus;
 			const matchPriority = !filterPriority || task.priority === filterPriority;
 			return matchSearch && matchStatus && matchPriority;
@@ -38,14 +37,14 @@
 	const columns = $derived(
 		statuses.map((s) => ({
 			status: s,
-			tasks: filtered.filter((t) => t.status === s)
+			tasks: filtered.filter((t) => t.status === s),
 		}))
 	);
 
 	function formatDate(iso: string): string {
 		return new Date(iso).toLocaleDateString($t('common.all') === 'All' ? 'en-GB' : 'fr-FR', {
 			day: 'numeric',
-			month: 'short'
+			month: 'short',
 		});
 	}
 
@@ -92,10 +91,7 @@
 
 	async function loadData() {
 		try {
-			const [tasksRes, teamsRes] = await Promise.all([
-				api.get('/tasks'),
-				api.get('/teams')
-			]);
+			const [tasksRes, teamsRes] = await Promise.all([api.get('/tasks'), api.get('/teams')]);
 			tasks = tasksRes.data.data.tasks;
 			teams = teamsRes.data.data.teams;
 		} catch {
@@ -128,7 +124,11 @@
 	<!-- Filters -->
 	<div class="flex flex-wrap gap-3 mb-6">
 		<div class="relative">
-			<Search size={16} class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+			<Search
+				size={16}
+				class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+				aria-hidden="true"
+			/>
 			<input
 				class="input pl-9 w-56"
 				type="search"
@@ -138,11 +138,7 @@
 			/>
 		</div>
 
-		<select
-			class="input w-auto"
-			bind:value={filterStatus}
-			aria-label={$t('tasks.filter_status')}
-		>
+		<select class="input w-auto" bind:value={filterStatus} aria-label={$t('tasks.filter_status')}>
 			<option value="">{$t('tasks.filter_status')} — {$t('common.all')}</option>
 			<option value="todo">{$t('status.todo')}</option>
 			<option value="in_progress">{$t('status.in_progress')}</option>
@@ -179,7 +175,9 @@
 					<!-- Column header -->
 					<div class="flex items-center gap-2 mb-3 px-1">
 						<StatusBadge status={col.status} />
-						<span class="ml-auto text-xs font-semibold text-slate-400 bg-slate-100 rounded-full px-2 py-0.5">
+						<span
+							class="ml-auto text-xs font-semibold text-slate-400 bg-slate-100 rounded-full px-2 py-0.5"
+						>
 							{col.tasks.length}
 						</span>
 					</div>
@@ -187,7 +185,9 @@
 					<!-- Task cards -->
 					<div class="space-y-2 min-h-[4rem]">
 						{#if col.tasks.length === 0}
-							<div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center text-sm text-slate-400">
+							<div
+								class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center text-sm text-slate-400"
+							>
 								{$t('tasks.no_tasks')}
 							</div>
 						{:else}
@@ -233,10 +233,18 @@
 									</div>
 
 									{#if task.deadline}
-										<p class="text-xs {isOverdue(task) ? 'text-orange-600 font-semibold' : 'text-slate-400'} mb-2">
+										<p
+											class="text-xs {isOverdue(task)
+												? 'text-orange-600 font-semibold'
+												: 'text-slate-400'} mb-2"
+										>
 											{$t('tasks.deadline')}: {formatDate(task.deadline)}
 											{#if isOverdue(task)}
-												<AlertTriangle size={12} class="inline ml-1" aria-label={$t('dashboard.overdue')} />
+												<AlertTriangle
+													size={12}
+													class="inline ml-1"
+													aria-label={$t('dashboard.overdue')}
+												/>
 											{/if}
 										</p>
 									{/if}
@@ -292,8 +300,4 @@
 	onsaved={onSaved}
 />
 
-<ConfirmModal
-	open={!!deleteTask}
-	onconfirm={confirmDelete}
-	oncancel={() => (deleteTask = null)}
-/>
+<ConfirmModal open={!!deleteTask} onconfirm={confirmDelete} oncancel={() => (deleteTask = null)} />

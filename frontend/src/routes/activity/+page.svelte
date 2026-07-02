@@ -17,14 +17,17 @@
 			day: 'numeric',
 			month: 'short',
 			hour: '2-digit',
-			minute: '2-digit'
+			minute: '2-digit',
 		});
 	}
 
 	function actionColor(action: string): string {
-		if (action.includes('creat') || action.includes('add')) return 'bg-teal-100 text-teal-800 border-teal-200';
-		if (action.includes('delet') || action.includes('remov')) return 'bg-rose-100 text-rose-800 border-rose-200';
-		if (action.includes('updat') || action.includes('edit') || action.includes('modif')) return 'bg-amber-100 text-amber-800 border-amber-200';
+		if (action.includes('creat') || action.includes('add'))
+			return 'bg-teal-100 text-teal-800 border-teal-200';
+		if (action.includes('delet') || action.includes('remov'))
+			return 'bg-rose-100 text-rose-800 border-rose-200';
+		if (action.includes('updat') || action.includes('edit') || action.includes('modif'))
+			return 'bg-amber-100 text-amber-800 border-amber-200';
 		return 'bg-slate-100 text-slate-700 border-slate-200';
 	}
 
@@ -70,7 +73,11 @@
 		<div class="card overflow-hidden">
 			<ul aria-label={$t('nav.activity')}>
 				{#each logs as log, i}
-					<li class="flex items-start gap-4 px-4 py-3 {i !== logs.length - 1 ? 'border-b border-slate-100' : ''}">
+					<li
+						class="flex items-start gap-4 px-4 py-3 {i !== logs.length - 1
+							? 'border-b border-slate-100'
+							: ''}"
+					>
 						<!-- Timeline dot -->
 						<div class="flex flex-col items-center shrink-0 mt-1">
 							<div class="w-2 h-2 rounded-full bg-blue-400" aria-hidden="true"></div>

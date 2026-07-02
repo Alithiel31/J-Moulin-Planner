@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "▶ Backend : format + lint + typecheck..."
+cd backend && npm run format:check && npm run lint && npm run typecheck || exit 1
+
+echo "▶ Frontend : format + lint + check..."
+cd ../frontend && npm run format:check && npm run lint && npm run check || exit 1
+
+echo "✓ Tout est au vert, push autorisé."

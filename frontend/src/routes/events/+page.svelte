@@ -39,7 +39,7 @@
 			weekday: 'short',
 			day: 'numeric',
 			month: 'long',
-			year: 'numeric'
+			year: 'numeric',
 		});
 	}
 
@@ -80,7 +80,7 @@
 				title: formTitle.trim(),
 				description: formDescription || undefined,
 				startDate: new Date(formStart).toISOString(),
-				endDate: formEnd ? new Date(formEnd).toISOString() : undefined
+				endDate: formEnd ? new Date(formEnd).toISOString() : undefined,
 			};
 			if (editingEvent) {
 				await api.patch(`/events/${editingEvent.id}`, payload);
@@ -158,7 +158,10 @@
 	{:else}
 		{#if upcoming.length > 0}
 			<section aria-labelledby="upcoming-heading" class="mb-8">
-				<h2 id="upcoming-heading" class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
+				<h2
+					id="upcoming-heading"
+					class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3"
+				>
 					{$t('dashboard.upcoming_events')}
 				</h2>
 				<div class="space-y-2">
@@ -169,7 +172,10 @@
 									{new Date(event.startDate).getDate()}
 								</div>
 								<div class="text-xs text-slate-500 uppercase">
-									{new Date(event.startDate).toLocaleDateString($t('common.all') === 'All' ? 'en-GB' : 'fr-FR', { month: 'short' })}
+									{new Date(event.startDate).toLocaleDateString(
+										$t('common.all') === 'All' ? 'en-GB' : 'fr-FR',
+										{ month: 'short' }
+									)}
 								</div>
 							</div>
 
@@ -207,7 +213,10 @@
 
 		{#if past.length > 0}
 			<section aria-labelledby="past-heading">
-				<h2 id="past-heading" class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">
+				<h2
+					id="past-heading"
+					class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3"
+				>
 					Passés
 				</h2>
 				<div class="space-y-2 opacity-70">
@@ -218,7 +227,10 @@
 									{new Date(event.startDate).getDate()}
 								</div>
 								<div class="text-xs text-slate-400 uppercase">
-									{new Date(event.startDate).toLocaleDateString($t('common.all') === 'All' ? 'en-GB' : 'fr-FR', { month: 'short' })}
+									{new Date(event.startDate).toLocaleDateString(
+										$t('common.all') === 'All' ? 'en-GB' : 'fr-FR',
+										{ month: 'short' }
+									)}
 								</div>
 							</div>
 
@@ -269,18 +281,31 @@
 				<h2 id="event-modal-title" class="text-base font-semibold text-slate-900">
 					{editingEvent ? $t('events.edit') : $t('events.new')}
 				</h2>
-				<button class="btn-ghost p-1 rounded" onclick={() => (formOpen = false)} aria-label={$t('common.cancel')}>
+				<button
+					class="btn-ghost p-1 rounded"
+					onclick={() => (formOpen = false)}
+					aria-label={$t('common.cancel')}
+				>
 					<X size={18} />
 				</button>
 			</div>
 
 			{#if formError}
-				<div class="mb-4 px-3 py-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm" role="alert">
+				<div
+					class="mb-4 px-3 py-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm"
+					role="alert"
+				>
 					{formError}
 				</div>
 			{/if}
 
-			<form onsubmit={(e) => { e.preventDefault(); submitForm(); }} class="space-y-4">
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					submitForm();
+				}}
+				class="space-y-4"
+			>
 				<div>
 					<label class="label" for="event-title">
 						{$t('common.title_field')} <span class="text-rose-500" aria-hidden="true">*</span>
@@ -293,7 +318,8 @@
 						{$t('events.description')}
 						<span class="text-slate-400 font-normal">({$t('common.optional')})</span>
 					</label>
-					<textarea id="event-desc" class="input resize-none" rows="2" bind:value={formDescription}></textarea>
+					<textarea id="event-desc" class="input resize-none" rows="2" bind:value={formDescription}
+					></textarea>
 				</div>
 
 				<div class="grid grid-cols-2 gap-4">
@@ -301,7 +327,13 @@
 						<label class="label" for="event-start">
 							{$t('events.start')} <span class="text-rose-500" aria-hidden="true">*</span>
 						</label>
-						<input id="event-start" class="input" type="datetime-local" bind:value={formStart} required />
+						<input
+							id="event-start"
+							class="input"
+							type="datetime-local"
+							bind:value={formStart}
+							required
+						/>
 					</div>
 					<div>
 						<label class="label" for="event-end">

@@ -19,7 +19,10 @@ const updateTeamSchema = z.object({
 export const teamsController = {
   getAll: async (req: Request, res: Response) => {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const [teams, total] = await prisma.$transaction([
@@ -73,9 +76,7 @@ export const teamsController = {
       data: {
         name: body.name,
         leadId: req.user.userId,
-        members: body.memberIds
-          ? { connect: body.memberIds.map((id) => ({ id })) }
-          : undefined,
+        members: body.memberIds ? { connect: body.memberIds.map((id) => ({ id })) } : undefined,
       },
       include: {
         lead: { select: { id: true, username: true } },

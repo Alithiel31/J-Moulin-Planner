@@ -1,6 +1,17 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { Plus, Pencil, Trash2, Users, CheckSquare, ChevronDown, ChevronUp, Loader2, AlertTriangle, X } from 'lucide-svelte';
+	import {
+		Plus,
+		Pencil,
+		Trash2,
+		Users,
+		CheckSquare,
+		ChevronDown,
+		ChevronUp,
+		Loader2,
+		AlertTriangle,
+		X,
+	} from 'lucide-svelte';
 	import { t } from '$lib/i18n.js';
 	import api from '$lib/api.js';
 	import { auth } from '$lib/auth.svelte.js';
@@ -59,7 +70,7 @@
 			const payload = {
 				name: formName.trim(),
 				leadId: formLeadId || undefined,
-				memberIds: formMemberIds
+				memberIds: formMemberIds,
 			};
 			if (editingTeam) {
 				await api.patch(`/teams/${editingTeam.id}`, payload);
@@ -92,7 +103,7 @@
 		try {
 			const [teamsRes, usersRes] = await Promise.all([
 				api.get('/teams'),
-				auth.isAdmin ? api.get('/users') : Promise.resolve({ data: { data: { users: [] } } })
+				auth.isAdmin ? api.get('/users') : Promise.resolve({ data: { data: { users: [] } } }),
 			]);
 			teams = teamsRes.data.data.teams;
 			allUsers = usersRes.data.data.users;
@@ -154,8 +165,10 @@
 						>
 							<h2 class="font-semibold text-slate-900">{team.name}</h2>
 							<p class="text-xs text-slate-500">
-								{team._count?.members ?? team.members?.length ?? 0} {$t('teams.members')} ·
-								{team._count?.tasks ?? team.tasks?.length ?? 0} {$t('teams.tasks')}
+								{team._count?.members ?? team.members?.length ?? 0}
+								{$t('teams.members')} ·
+								{team._count?.tasks ?? team.tasks?.length ?? 0}
+								{$t('teams.tasks')}
 								{#if team.lead}
 									· {$t('teams.lead')}: {team.lead.username}
 								{/if}
@@ -200,7 +213,9 @@
 							</h3>
 							<div class="flex flex-wrap gap-2">
 								{#each team.members as member}
-									<span class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-full text-sm text-slate-700">
+									<span
+										class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-full text-sm text-slate-700"
+									>
 										<span
 											class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold"
 											aria-hidden="true"
@@ -214,14 +229,19 @@
 							</div>
 
 							{#if team.tasks && team.tasks.length > 0}
-								<h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-4 mb-2 flex items-center gap-1">
+								<h3
+									class="text-xs font-semibold text-slate-500 uppercase tracking-wide mt-4 mb-2 flex items-center gap-1"
+								>
 									<CheckSquare size={12} aria-hidden="true" />
 									{$t('nav.tasks')}
 								</h3>
 								<ul class="space-y-1">
 									{#each team.tasks.slice(0, 5) as task}
 										<li class="text-sm text-slate-700 flex items-center gap-2">
-											<span class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" aria-hidden="true"></span>
+											<span
+												class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"
+												aria-hidden="true"
+											></span>
 											{task.title}
 										</li>
 									{/each}
@@ -248,18 +268,31 @@
 				<h2 id="team-modal-title" class="text-base font-semibold text-slate-900">
 					{editingTeam ? $t('teams.edit') : $t('teams.new')}
 				</h2>
-				<button class="btn-ghost p-1 rounded" onclick={() => (formOpen = false)} aria-label={$t('common.cancel')}>
+				<button
+					class="btn-ghost p-1 rounded"
+					onclick={() => (formOpen = false)}
+					aria-label={$t('common.cancel')}
+				>
 					<X size={18} />
 				</button>
 			</div>
 
 			{#if formError}
-				<div class="mb-4 px-3 py-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm" role="alert">
+				<div
+					class="mb-4 px-3 py-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-sm"
+					role="alert"
+				>
 					{formError}
 				</div>
 			{/if}
 
-			<form onsubmit={(e) => { e.preventDefault(); submitForm(); }} class="space-y-4">
+			<form
+				onsubmit={(e) => {
+					e.preventDefault();
+					submitForm();
+				}}
+				class="space-y-4"
+			>
 				<div>
 					<label class="label" for="team-name">{$t('teams.name')}</label>
 					<input id="team-name" class="input" type="text" bind:value={formName} required />
@@ -311,8 +344,4 @@
 	</div>
 {/if}
 
-<ConfirmModal
-	open={!!deleteTeam}
-	onconfirm={confirmDelete}
-	oncancel={() => (deleteTeam = null)}
-/>
+<ConfirmModal open={!!deleteTeam} onconfirm={confirmDelete} oncancel={() => (deleteTeam = null)} />

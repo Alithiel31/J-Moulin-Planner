@@ -6,9 +6,9 @@ import { NotFoundError, ValidationError, AuthorizationError } from '../lib/error
 import { logActivity } from '../lib/activity';
 
 // Accept both full ISO datetime ("2026-05-22T00:00:00Z") and date-only ("2026-05-22")
-const isoDatetime = z.string().transform((val) =>
-  /^\d{4}-\d{2}-\d{2}$/.test(val) ? `${val}T00:00:00.000Z` : val
-);
+const isoDatetime = z
+  .string()
+  .transform((val) => (/^\d{4}-\d{2}-\d{2}$/.test(val) ? `${val}T00:00:00.000Z` : val));
 
 const createTaskSchema = z.object({
   title: z.string().min(1).max(255),
@@ -29,7 +29,10 @@ export const tasksController = {
     if (!req.user) throw new AuthorizationError();
 
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const where =
@@ -82,7 +85,10 @@ export const tasksController = {
 
     if (req.user.role !== 'admin') {
       if (req.user.role === 'teamlead') {
-        if (task.team?.id !== (await prisma.team.findFirst({ where: { leadId: req.user.userId } }))?.id) {
+        if (
+          task.team?.id !==
+          (await prisma.team.findFirst({ where: { leadId: req.user.userId } }))?.id
+        ) {
           throw new AuthorizationError();
         }
       } else {

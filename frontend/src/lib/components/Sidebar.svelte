@@ -8,7 +8,7 @@
 		UserCog,
 		Activity,
 		LogOut,
-		Globe
+		Globe,
 	} from 'lucide-svelte';
 	import { page } from '$app/stores';
 	import { t, locale, type Locale } from '$lib/i18n.js';
@@ -28,12 +28,12 @@
 		{ href: '/tasks', label: 'nav.tasks', Icon: CheckSquare, always: true },
 		{ href: '/teams', label: 'nav.teams', Icon: Users, teamlead: true },
 		{ href: '/events', label: 'nav.events', Icon: CalendarDays, always: true },
-		{ href: '/timeline', label: 'nav.timeline', Icon: CalendarRange, always: true }
+		{ href: '/timeline', label: 'nav.timeline', Icon: CalendarRange, always: true },
 	];
 
 	const adminItems = [
 		{ href: '/users', label: 'nav.users', Icon: UserCog },
-		{ href: '/activity', label: 'nav.activity', Icon: Activity }
+		{ href: '/activity', label: 'nav.activity', Icon: Activity },
 	];
 </script>
 
@@ -66,9 +66,7 @@
 
 		{#if auth.isAdmin}
 			<div class="pt-4">
-				<p class="px-3 mb-1 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-					Admin
-				</p>
+				<p class="px-3 mb-1 text-xs font-semibold text-slate-500 uppercase tracking-wider">Admin</p>
 				{#each adminItems as item}
 					<a
 						href={item.href}

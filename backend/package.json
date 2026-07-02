@@ -17,7 +17,18 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "node --test --env-file=.env ./src/**/*.spec.test.ts",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.svelte": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -54,6 +65,8 @@
     "eslint": "^10.2.1",
     "prettier": "^3.8.3",
     "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.7"
   }
 }

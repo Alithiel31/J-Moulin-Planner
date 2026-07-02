@@ -7,7 +7,10 @@ export { logActivity } from '../lib/activity';
 export const activityLogsController = {
   getAll: async (req: Request, res: Response) => {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const [logs, total] = await prisma.$transaction([
@@ -29,7 +32,10 @@ export const activityLogsController = {
   getByTaskId: async (req: Request, res: Response) => {
     const { taskId } = req.params;
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const task = await prisma.task.findUnique({ where: { id: taskId } });
@@ -55,7 +61,10 @@ export const activityLogsController = {
   getByTeamId: async (req: Request, res: Response) => {
     const { teamId } = req.params;
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const team = await prisma.team.findUnique({ where: { id: teamId } });
@@ -81,7 +90,10 @@ export const activityLogsController = {
   getByUserId: async (req: Request, res: Response) => {
     const { userId } = req.params;
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const user = await prisma.user.findUnique({ where: { id: userId } });

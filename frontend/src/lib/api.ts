@@ -10,7 +10,7 @@ const TOKEN_KEY = 'auth_token';
 
 const api = axios.create({
 	baseURL: apiBaseURL,
-	headers: { 'Content-Type': 'application/json' }
+	headers: { 'Content-Type': 'application/json' },
 });
 
 // Bearer token sur chaque requête (en complément du cookie httpOnly)

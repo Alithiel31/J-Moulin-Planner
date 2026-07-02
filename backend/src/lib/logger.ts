@@ -12,15 +12,24 @@ export const logger = {
     console.log(`${colors.blue}[INFO]${colors.reset} ${message}`, data ? JSON.stringify(data) : '');
   },
   success: (message: string, data?: unknown) => {
-    console.log(`${colors.green}[SUCCESS]${colors.reset} ${message}`, data ? JSON.stringify(data) : '');
+    console.log(
+      `${colors.green}[SUCCESS]${colors.reset} ${message}`,
+      data ? JSON.stringify(data) : ''
+    );
   },
   warn: (message: string, data?: unknown) => {
-    console.warn(`${colors.yellow}[WARN]${colors.reset} ${message}`, data ? JSON.stringify(data) : '');
+    console.warn(
+      `${colors.yellow}[WARN]${colors.reset} ${message}`,
+      data ? JSON.stringify(data) : ''
+    );
   },
   error: (message: string, error?: unknown) => {
     console.error(`${colors.red}[ERROR]${colors.reset} ${message}`, error || '');
   },
   debug: (message: string, data?: unknown) => {
-    console.log(`${colors.gray}[DEBUG]${colors.reset} ${message}`, data ? JSON.stringify(data) : '');
+    console.log(
+      `${colors.gray}[DEBUG]${colors.reset} ${message}`,
+      data ? JSON.stringify(data) : ''
+    );
   },
 };

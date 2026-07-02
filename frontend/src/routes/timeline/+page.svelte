@@ -79,7 +79,10 @@
 	const getBarLeft = (task: Task) =>
 		pct(task.startDate ?? new Date(new Date(task.deadline!).getTime() - 86400000));
 	const getBarWidth = (task: Task) =>
-		widthPct(task.startDate ?? new Date(new Date(task.deadline!).getTime() - 86400000), task.deadline!);
+		widthPct(
+			task.startDate ?? new Date(new Date(task.deadline!).getTime() - 86400000),
+			task.deadline!
+		);
 
 	// ── En-tête mois ───────────────────────────────────────────────────────────
 	const monthBlocks = $derived.by(() => {
@@ -93,7 +96,7 @@
 			blocks.push({
 				label: cur.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' }),
 				left: ((blockStart.getTime() - rangeStart.getTime()) / totalMs) * 100,
-				width: ((blockEnd.getTime() - blockStart.getTime()) / totalMs) * 100
+				width: ((blockEnd.getTime() - blockStart.getTime()) / totalMs) * 100,
 			});
 			cur.setMonth(cur.getMonth() + 1);
 		}
@@ -109,7 +112,7 @@
 		while (cur < rangeEnd) {
 			marks.push({
 				left: ((cur.getTime() - rangeStart.getTime()) / totalMs) * 100,
-				label: cur.getDate().toString()
+				label: cur.getDate().toString(),
 			});
 			cur.setDate(cur.getDate() + 7);
 		}
@@ -144,7 +147,7 @@
 			const [tasksRes, teamsRes, eventsRes] = await Promise.all([
 				api.get('/tasks'),
 				api.get('/teams'),
-				api.get('/events')
+				api.get('/events'),
 			]);
 			tasks = tasksRes.data.data.tasks;
 			teams = teamsRes.data.data.teams;
@@ -189,11 +192,13 @@
 			<button
 				onclick={prev}
 				class="px-4 py-1.5 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-			>{$t('timeline.prev')}</button>
+				>{$t('timeline.prev')}</button
+			>
 			<button
 				onclick={next}
 				class="px-4 py-1.5 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-			>{$t('timeline.next')}</button>
+				>{$t('timeline.next')}</button
+			>
 		</div>
 	</div>
 
@@ -205,15 +210,16 @@
 				{selectedTeamId === null
 				? 'bg-blue-600 text-white border-blue-600'
 				: 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'}"
-		>{$t('timeline.all_teams')}</button>
+			>{$t('timeline.all_teams')}</button
+		>
 		{#each teams as team}
 			<button
 				onclick={() => (selectedTeamId = team.id)}
 				class="px-4 py-1.5 text-sm rounded-full border transition-colors
 					{selectedTeamId === team.id
 					? 'bg-blue-600 text-white border-blue-600'
-					: 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'}"
-			>{team.name}</button>
+					: 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'}">{team.name}</button
+			>
 		{/each}
 	</div>
 
@@ -235,7 +241,9 @@
 							class="absolute top-0 h-full flex items-center justify-center border-r border-gray-300 overflow-hidden"
 							style="left: {block.left}%; width: {block.width}%"
 						>
-							<span class="text-xs font-semibold text-gray-700 capitalize truncate px-2">{block.label}</span>
+							<span class="text-xs font-semibold text-gray-700 capitalize truncate px-2"
+								>{block.label}</span
+							>
 						</div>
 					{/each}
 				</div>
@@ -243,7 +251,9 @@
 
 			<!-- En-tête semaines -->
 			<div class="flex border-b border-gray-200" style="min-width: 600px">
-				<div class="w-44 flex-shrink-0 bg-gray-50 border-r border-gray-200 px-3 py-1 text-xs text-gray-400 font-medium">
+				<div
+					class="w-44 flex-shrink-0 bg-gray-50 border-r border-gray-200 px-3 py-1 text-xs text-gray-400 font-medium"
+				>
 					{$t('timeline.category')}
 				</div>
 				<div class="flex-1 relative h-6 bg-gray-50">
@@ -256,14 +266,20 @@
 						</div>
 					{/each}
 					{#if todayVisible}
-						<div class="absolute top-0 h-full border-l-2 border-red-400 z-10" style="left: {todayPct}%"></div>
+						<div
+							class="absolute top-0 h-full border-l-2 border-red-400 z-10"
+							style="left: {todayPct}%"
+						></div>
 					{/if}
 				</div>
 			</div>
 
 			<!-- Lignes par catégorie -->
 			{#each categories as cat}
-				<div class="flex border-b border-gray-100 hover:bg-blue-50/30 transition-colors" style="min-height: 52px; min-width: 600px">
+				<div
+					class="flex border-b border-gray-100 hover:bg-blue-50/30 transition-colors"
+					style="min-height: 52px; min-width: 600px"
+				>
 					<!-- Label -->
 					<div class="w-44 flex-shrink-0 border-r border-gray-200 px-3 flex items-center bg-white">
 						<span class="text-sm font-medium text-gray-700 truncate">{cat}</span>
@@ -336,25 +352,38 @@
 	<!-- Légende -->
 	<div class="flex flex-wrap gap-5 text-xs text-gray-500">
 		<span class="flex items-center gap-1.5">
-			<span class="w-4 h-3 rounded inline-block" style="background:#60a5fa"></span>{$t('status.todo')}
+			<span class="w-4 h-3 rounded inline-block" style="background:#60a5fa"></span>{$t(
+				'status.todo'
+			)}
 		</span>
 		<span class="flex items-center gap-1.5">
-			<span class="w-4 h-3 rounded inline-block" style="background:#fbbf24"></span>{$t('status.in_progress')}
+			<span class="w-4 h-3 rounded inline-block" style="background:#fbbf24"></span>{$t(
+				'status.in_progress'
+			)}
 		</span>
 		<span class="flex items-center gap-1.5">
-			<span class="w-4 h-3 rounded inline-block" style="background:#4ade80"></span>{$t('status.done')}
+			<span class="w-4 h-3 rounded inline-block" style="background:#4ade80"></span>{$t(
+				'status.done'
+			)}
 		</span>
 		<span class="flex items-center gap-1.5">
-			<span class="w-4 h-3 rounded inline-block" style="background:rgba(236,72,153,0.3); border-left:2px solid #ec4899;"></span>{$t('timeline.event')}
+			<span
+				class="w-4 h-3 rounded inline-block"
+				style="background:rgba(236,72,153,0.3); border-left:2px solid #ec4899;"
+			></span>{$t('timeline.event')}
 		</span>
 		<span class="flex items-center gap-1.5">
 			<span class="w-0.5 h-4 inline-block" style="background:#f87171"></span>{$t('timeline.today')}
 		</span>
 		<span class="flex items-center gap-1.5">
-			<span class="w-4 h-3 rounded inline-block border-2 border-red-500"></span>{$t('timeline.high_priority')}
+			<span class="w-4 h-3 rounded inline-block border-2 border-red-500"></span>{$t(
+				'timeline.high_priority'
+			)}
 		</span>
 		<span class="flex items-center gap-1.5">
-			<span class="w-4 h-3 rounded inline-block border-2 border-orange-400"></span>{$t('timeline.medium_priority')}
+			<span class="w-4 h-3 rounded inline-block border-2 border-orange-400"></span>{$t(
+				'timeline.medium_priority'
+			)}
 		</span>
 	</div>
 </div>

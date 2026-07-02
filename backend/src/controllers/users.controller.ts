@@ -12,7 +12,10 @@ const updateUserSchema = z.object({
 export const usersController = {
   getAll: async (req: Request, res: Response) => {
     const page = Math.max(1, parseInt(req.query.page as string) || 1);
-    const limit = Math.min(config.maxPageSize, parseInt(req.query.limit as string) || config.defaultPageSize);
+    const limit = Math.min(
+      config.maxPageSize,
+      parseInt(req.query.limit as string) || config.defaultPageSize
+    );
     const skip = (page - 1) * limit;
 
     const [users, total] = await prisma.$transaction([
@@ -72,7 +75,9 @@ export const usersController = {
     // otherwise the FK constraint on Team.leadId would block the delete.
     const ledTeam = await prisma.team.findUnique({
       where: { leadId: id },
-      include: { members: { where: { NOT: { id } }, select: { id: true }, orderBy: { createdAt: 'asc' } } },
+      include: {
+        members: { where: { NOT: { id } }, select: { id: true }, orderBy: { createdAt: 'asc' } },
+      },
     });
 
     if (ledTeam) {
@@ -91,7 +96,7 @@ export const usersController = {
 
         if (!admin) {
           throw new ConflictError(
-            'Cannot delete this user: they lead an otherwise-empty team and no other admin exists to take it over.',
+            'Cannot delete this user: they lead an otherwise-empty team and no other admin exists to take it over.'
           );
         }
 
