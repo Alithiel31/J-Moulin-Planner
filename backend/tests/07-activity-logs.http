@@ -1,0 +1,50 @@
+@baseUrl = http://caesura:3005/api
+
+@adminToken = PASTE_ADMIN_TOKEN_HERE
+@userToken = PASTE_USER_TOKEN_HERE
+@taskId = PASTE_TASK_ID_HERE
+@teamId = PASTE_TEAM_ID_HERE
+@userId = PASTE_USER_ID_HERE
+
+
+### ✅ Get all logs - nominal (paginé, 20 par défaut)
+GET {{baseUrl}}/activity-logs
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get all logs - avec pagination
+GET {{baseUrl}}/activity-logs?page=1&limit=10
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get all logs - sans token (doit retourner 401)
+GET {{baseUrl}}/activity-logs
+
+### ✅ Get logs by task - nominal
+GET {{baseUrl}}/activity-logs/task/{{taskId}}
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get logs by task - avec pagination
+GET {{baseUrl}}/activity-logs/task/{{taskId}}?page=1&limit=5
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get logs by task - tâche inexistante (doit retourner 404)
+GET {{baseUrl}}/activity-logs/task/nonexistent-id
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get logs by team - nominal
+GET {{baseUrl}}/activity-logs/team/{{teamId}}
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get logs by team - équipe inexistante (doit retourner 404)
+GET {{baseUrl}}/activity-logs/team/nonexistent-id
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get logs by user - nominal
+GET {{baseUrl}}/activity-logs/user/{{userId}}
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get logs by user - utilisateur inexistant (doit retourner 404)
+GET {{baseUrl}}/activity-logs/user/nonexistent-id
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get logs by user - sans token (doit retourner 401)
+GET {{baseUrl}}/activity-logs/user/{{userId}}

@@ -7,41 +7,30 @@
 	import { auth } from '$lib/auth.svelte.js';
 	import Sidebar from '$lib/components/Sidebar.svelte';
 
-	const { children } = $props();
-
-	onMount(async () => {
-		await auth.init();
-	});
-
-	$effect(() => {
-		if (!auth.loading) {
-			const isLogin = $page.url.pathname === '/login';
-			if (!auth.user && !isLogin) {
-				goto('/login');
-			} else if (auth.user && isLogin) {
-				goto('/');
-			}
-		}
-	});
+	let { children } = $props();
 
 	const isLoginPage = $derived($page.url.pathname === '/login');
+
+	onMount(() => auth.init());
+
+	$effect(() => {
+		if (!auth.loading && !auth.isAuthenticated && !isLoginPage) {
+			goto('/login');
+		}
+	});
 </script>
 
 {#if auth.loading}
 	<div class="min-h-screen flex items-center justify-center bg-slate-50">
-		<Loader2 size={32} class="animate-spin text-blue-600" aria-label="Chargement" />
+		<Loader2 class="animate-spin text-slate-400" size={32} />
 	</div>
 {:else if isLoginPage}
 	{@render children()}
-{:else if auth.user}
-	<div class="flex h-screen bg-slate-50">
+{:else if auth.isAuthenticated}
+	<div class="flex min-h-screen bg-slate-50">
 		<Sidebar />
-		<main class="flex-1 overflow-auto focus:outline-none" tabindex="-1">
+		<main class="flex-1 px-6 py-8">
 			{@render children()}
 		</main>
-	</div>
-{:else}
-	<div class="min-h-screen flex items-center justify-center bg-slate-50">
-		<Loader2 size={32} class="animate-spin text-blue-600" aria-label="Redirection" />
 	</div>
 {/if}

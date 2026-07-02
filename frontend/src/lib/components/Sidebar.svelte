@@ -4,6 +4,7 @@
 		CheckSquare,
 		Users,
 		CalendarDays,
+		CalendarRange,
 		UserCog,
 		Activity,
 		LogOut,
@@ -26,7 +27,8 @@
 		{ href: '/', label: 'nav.dashboard', Icon: LayoutDashboard, always: true },
 		{ href: '/tasks', label: 'nav.tasks', Icon: CheckSquare, always: true },
 		{ href: '/teams', label: 'nav.teams', Icon: Users, teamlead: true },
-		{ href: '/events', label: 'nav.events', Icon: CalendarDays, always: true }
+		{ href: '/events', label: 'nav.events', Icon: CalendarDays, always: true },
+		{ href: '/timeline', label: 'nav.timeline', Icon: CalendarRange, always: true }
 	];
 
 	const adminItems = [

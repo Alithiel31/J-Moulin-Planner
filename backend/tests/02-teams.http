@@ -1,0 +1,108 @@
+@baseUrl = http://caesura:3005/api
+
+@adminToken = PASTE_ADMIN_TOKEN_HERE
+@teamleadToken = PASTE_TEAMLEAD_TOKEN_HERE
+@teammateToken = PASTE_TEAMMATE_TOKEN_HERE
+@teamId = PASTE_TEAM_ID_HERE
+@memberId = PASTE_MEMBER_ID_HERE
+
+
+### ✅ Get all teams - nominal
+GET {{baseUrl}}/teams
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get all teams - avec pagination
+GET {{baseUrl}}/teams?page=1&limit=5
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get all teams - sans token (doit retourner 401)
+GET {{baseUrl}}/teams
+
+### ✅ Create team - teamlead (nominal)
+POST {{baseUrl}}/teams
+Authorization: Bearer {{teamleadToken}}
+Content-Type: application/json
+
+{
+  "name": "Équipe Design",
+  "memberIds": []
+}
+
+### ❌ Create team - nom déjà pris (doit retourner 409)
+POST {{baseUrl}}/teams
+Authorization: Bearer {{teamleadToken}}
+Content-Type: application/json
+
+{
+  "name": "Équipe Design"
+}
+
+### ❌ Create team - sans token (doit retourner 401)
+POST {{baseUrl}}/teams
+Content-Type: application/json
+
+{
+  "name": "Équipe Test"
+}
+
+### ✅ Get team by ID - nominal
+GET {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get team by ID - inexistant (doit retourner 404)
+GET {{baseUrl}}/teams/nonexistent-id
+Authorization: Bearer {{adminToken}}
+
+### ✅ Update team - renommer (teamlead de l'équipe)
+PATCH {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{teamleadToken}}
+Content-Type: application/json
+
+{
+  "name": "Équipe Design v2"
+}
+
+### ✅ Update team - ajouter un membre
+PATCH {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{teamleadToken}}
+Content-Type: application/json
+
+{
+  "memberIds": ["{{memberId}}"]
+}
+
+### ✅ Update team - transfert de lead (vers un membre)
+PATCH {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{teamleadToken}}
+Content-Type: application/json
+
+{
+  "leadId": "{{memberId}}",
+  "memberIds": ["{{memberId}}"]
+}
+
+### ❌ Update team - transfert vers non-membre (doit retourner 400)
+PATCH {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{teamleadToken}}
+Content-Type: application/json
+
+{
+  "leadId": "nonexistent-user-id"
+}
+
+### ❌ Update team - teammate (doit retourner 403)
+PATCH {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{teammateToken}}
+Content-Type: application/json
+
+{
+  "name": "Tentative"
+}
+
+### ✅ Delete team - teamlead de l'équipe (nominal)
+DELETE {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{teamleadToken}}
+
+### ❌ Delete team - teammate (doit retourner 403)
+DELETE {{baseUrl}}/teams/{{teamId}}
+Authorization: Bearer {{teammateToken}}

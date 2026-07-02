@@ -1,0 +1,120 @@
+@baseUrl = http://caesura:3005/api
+
+@adminToken = PASTE_ADMIN_TOKEN_HERE
+@teammateToken = PASTE_TEAMMATE_TOKEN_HERE
+@eventId = PASTE_EVENT_ID_HERE
+@teamId = PASTE_TEAM_ID_HERE
+@attendeeId = PASTE_ATTENDEE_ID_HERE
+
+
+### ✅ Get all events - nominal
+GET {{baseUrl}}/events
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get all events - avec pagination
+GET {{baseUrl}}/events?page=1&limit=5
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get all events - sans token (doit retourner 401)
+GET {{baseUrl}}/events
+
+### ✅ Get event by ID - nominal
+GET {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get event by ID - inexistant (doit retourner 404)
+GET {{baseUrl}}/events/nonexistent-id
+Authorization: Bearer {{adminToken}}
+
+### ✅ Create event - admin, dates ISO complètes
+POST {{baseUrl}}/events
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Réunion trimestrielle",
+  "description": "Bilan du trimestre",
+  "startDate": "2026-07-15T09:00:00.000Z",
+  "endDate": "2026-07-15T11:00:00.000Z",
+  "location": "Salle de conférence A",
+  "teamId": "{{teamId}}",
+  "attendees": ["{{attendeeId}}"]
+}
+
+### ✅ Create event - sans endDate (auto +1h)
+POST {{baseUrl}}/events
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Event sans endDate",
+  "startDate": "2026-07-20T14:00:00.000Z"
+}
+
+### ✅ Create event - dates en format date seule (isoDatetime transform)
+POST {{baseUrl}}/events
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Event date simple",
+  "startDate": "2026-08-01",
+  "endDate": "2026-08-01"
+}
+
+### ❌ Create event - non admin (doit retourner 403)
+POST {{baseUrl}}/events
+Authorization: Bearer {{teammateToken}}
+Content-Type: application/json
+
+{
+  "title": "Tentative",
+  "startDate": "2026-07-15T09:00:00.000Z"
+}
+
+### ❌ Create event - endDate avant startDate (doit retourner 400)
+POST {{baseUrl}}/events
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Event invalide",
+  "startDate": "2026-07-15T11:00:00.000Z",
+  "endDate": "2026-07-15T09:00:00.000Z"
+}
+
+### ❌ Create event - sans token (doit retourner 401)
+POST {{baseUrl}}/events
+Content-Type: application/json
+
+{
+  "title": "Event anonyme",
+  "startDate": "2026-07-15T09:00:00.000Z"
+}
+
+### ✅ Update event - admin (nominal)
+PATCH {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Réunion trimestrielle - MAJ",
+  "location": "Salle B"
+}
+
+### ❌ Update event - non admin (doit retourner 403)
+PATCH {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{teammateToken}}
+Content-Type: application/json
+
+{
+  "title": "Tentative de modification"
+}
+
+### ✅ Delete event - admin (nominal)
+DELETE {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{adminToken}}
+
+### ❌ Delete event - non admin (doit retourner 403)
+DELETE {{baseUrl}}/events/{{eventId}}
+Authorization: Bearer {{teammateToken}}

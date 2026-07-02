@@ -1,0 +1,51 @@
+@baseUrl = http://caesura:3005/api
+
+# Token d'un admin (créé via seed)
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXIyb3gwYnYwMDAxMDdyc2UweHRscmJmIiwidXNlcm5hbWUiOiJhbGljZSIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4Mjk0OTYzNSwiZXhwIjoxNzgzNTU0NDM1fQ.2xXlqR-a7AlP997yh-8oxOJAC4mwWjrIRf8zuzlaalY
+# Token d'un teammate
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXIyb3gwYnYwMDAxMDdyc2UweHRscmJmIiwidXNlcm5hbWUiOiJhbGljZSIsInJvbGUiOiJ0ZWFtbWF0ZSIsImlhdCI6MTc4Mjk0NzUxNiwiZXhwIjoxNzgzNTUyMzE2fQ.2kjnv_-VoPFs-HYp_bjWLNfTSaDYolQkrxfO2HZtmAI
+
+# ID d'un utilisateur existant
+@userId = cmr2qjtpq000007mioxhcupkg
+
+
+### ✅ Get all users - nominal
+GET {{baseUrl}}/users
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get all users - avec pagination
+GET {{baseUrl}}/users?page=1&limit=5
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get all users - sans token (doit retourner 401)
+GET {{baseUrl}}/users
+
+### ✅ Get user by ID - nominal
+GET {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{adminToken}}
+
+### ❌ Get user by ID - inexistant (doit retourner 404)
+GET {{baseUrl}}/users/nonexistent-id
+Authorization: Bearer {{adminToken}}
+
+### ✅ Update user - admin (nominal)
+PATCH {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "role": "teamlead"
+}
+
+### ❌ Update user - rôle invalide (doit retourner 400)
+PATCH {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "role": "superadmin"
+}
+
+### ✅ Delete user - admin (nominal)
+DELETE {{baseUrl}}/users/{{userId}}
+Authorization: Bearer {{adminToken}}

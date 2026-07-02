@@ -1,0 +1,92 @@
+@baseUrl = http://caesura:3005/api
+
+# ─────────────────────────────────────────────
+# Copiez le token reçu après login dans @token
+# ─────────────────────────────────────────────
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbXIyb3gwYnYwMDAxMDdyc2UweHRscmJmIiwidXNlcm5hbWUiOiJhbGljZSIsInJvbGUiOiJ0ZWFtbWF0ZSIsImlhdCI6MTc4Mjk0NzUxNiwiZXhwIjoxNzgzNTUyMzE2fQ.2kjnv_-VoPFs-HYp_bjWLNfTSaDYolQkrxfO2HZtmAI
+
+
+### ✅ Signup - teammate (nominal)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "password123"
+}
+
+### ✅ Signup - teamlead (nominal)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "boby",
+  "password": "password123",
+  "role": "teamlead"
+}
+
+### ❌ Signup - tentative admin (doit retourner 400)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "hacker",
+  "password": "password123",
+  "role": "admin"
+}
+
+### ❌ Signup - mot de passe trop court (doit retourner 400)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "charlie",
+  "password": "short"
+}
+
+### ❌ Signup - username déjà pris (doit retourner 409)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "password123"
+}
+
+### ✅ Login - nominal (copiez le token dans @token)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "password123"
+}
+
+### ❌ Login - mauvais mot de passe (doit retourner 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "password": "wrongpassword"
+}
+
+### ❌ Login - utilisateur inexistant (doit retourner 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "nobody",
+  "password": "password123"
+}
+
+### ✅ Me - utilisateur connecté
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### ✅ Me - sans token (doit retourner user: null)
+GET {{baseUrl}}/auth/me
+
+### ✅ Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}

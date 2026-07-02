@@ -1,0 +1,111 @@
+@baseUrl = http://caesura:3005/api
+
+@adminToken = PASTE_ADMIN_TOKEN_HERE
+@teamleadToken = PASTE_TEAMLEAD_TOKEN_HERE
+@teammateToken = PASTE_TEAMMATE_TOKEN_HERE
+@taskId = PASTE_TASK_ID_HERE
+@teamId = PASTE_TEAM_ID_HERE
+@assigneeId = PASTE_ASSIGNEE_ID_HERE
+
+
+### ✅ Get all tasks - admin (voit tout)
+GET {{baseUrl}}/tasks
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get all tasks - avec pagination
+GET {{baseUrl}}/tasks?page=1&limit=5
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get all tasks - teamlead (voit son équipe)
+GET {{baseUrl}}/tasks
+Authorization: Bearer {{teamleadToken}}
+
+### ✅ Get all tasks - teammate (voit ses tâches assignées)
+GET {{baseUrl}}/tasks
+Authorization: Bearer {{teammateToken}}
+
+### ❌ Get all tasks - sans token (doit retourner 401)
+GET {{baseUrl}}/tasks
+
+### ✅ Create task - deadline en ISO complet
+POST {{baseUrl}}/tasks
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Préparer la démo",
+  "description": "Préparer la présentation pour le client",
+  "category": "Présentation",
+  "deadline": "2026-12-31T18:00:00.000Z",
+  "priority": "high",
+  "teamId": "{{teamId}}",
+  "assignees": ["{{assigneeId}}"]
+}
+
+### ✅ Create task - deadline en format date seule (isoDatetime transform)
+POST {{baseUrl}}/tasks
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Tâche date simple",
+  "deadline": "2026-12-31",
+  "priority": "medium"
+}
+
+### ❌ Create task - deadline manquante (doit retourner 400)
+POST {{baseUrl}}/tasks
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Tâche sans deadline"
+}
+
+### ❌ Create task - priorité invalide (doit retourner 400)
+POST {{baseUrl}}/tasks
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "title": "Tâche invalide",
+  "deadline": "2026-12-31T18:00:00.000Z",
+  "priority": "ultra"
+}
+
+### ✅ Get task by ID - admin
+GET {{baseUrl}}/tasks/{{taskId}}
+Authorization: Bearer {{adminToken}}
+
+### ✅ Get task by ID - teammate assigné
+GET {{baseUrl}}/tasks/{{taskId}}
+Authorization: Bearer {{teammateToken}}
+
+### ❌ Get task by ID - inexistant (doit retourner 404)
+GET {{baseUrl}}/tasks/nonexistent-id
+Authorization: Bearer {{adminToken}}
+
+### ✅ Update task - changer priorité
+PATCH {{baseUrl}}/tasks/{{taskId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "priority": "low"
+}
+
+### ❌ Update task - status invalide (doit retourner 400)
+PATCH {{baseUrl}}/tasks/{{taskId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "status": "flying"
+}
+
+### ❌ Delete task - sans token (doit retourner 401)
+DELETE {{baseUrl}}/tasks/{{taskId}}
+
+### ✅ Delete task - admin
+DELETE {{baseUrl}}/tasks/{{taskId}}
+Authorization: Bearer {{adminToken}}

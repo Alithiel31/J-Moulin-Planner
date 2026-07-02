@@ -1,0 +1,55 @@
+@baseUrl = http://caesura:3005/api
+
+@adminToken = PASTE_ADMIN_TOKEN_HERE
+@uploaderToken = PASTE_UPLOADER_TOKEN_HERE
+@otherToken = PASTE_OTHER_USER_TOKEN_HERE
+@taskId = PASTE_TASK_ID_HERE
+@attachmentId = PASTE_ATTACHMENT_ID_HERE
+
+
+### ✅ Get attachments by task - nominal
+GET {{baseUrl}}/attachments/task/{{taskId}}
+Authorization: Bearer {{uploaderToken}}
+
+### ❌ Get attachments by task - sans token (doit retourner 401)
+GET {{baseUrl}}/attachments/task/{{taskId}}
+
+### ❌ Get attachments by task - tâche inexistante (doit retourner 404)
+GET {{baseUrl}}/attachments/task/nonexistent-id
+Authorization: Bearer {{uploaderToken}}
+
+### ✅ Get attachment by ID - nominal
+GET {{baseUrl}}/attachments/{{attachmentId}}
+Authorization: Bearer {{uploaderToken}}
+
+### ❌ Get attachment by ID - inexistant (doit retourner 404)
+GET {{baseUrl}}/attachments/nonexistent-id
+Authorization: Bearer {{uploaderToken}}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Upload : REST Client ne supporte pas multipart/form-data nativement.
+# Utiliser curl :
+#
+#   curl -X POST http://localhost:3000/api/attachments \
+#     -H "Authorization: Bearer TOKEN" \
+#     -F "file=@/chemin/vers/fichier.pdf" \
+#     -F "taskId=TASK_ID"
+#
+# Le fichier est stocké dans ./uploads/ (config.uploadDir).
+# La suppression efface aussi le fichier sur disque.
+# ─────────────────────────────────────────────────────────────────────────────
+
+### ✅ Delete attachment - uploader (nominal, fichier supprimé sur disque)
+DELETE {{baseUrl}}/attachments/{{attachmentId}}
+Authorization: Bearer {{uploaderToken}}
+
+### ❌ Delete attachment - autre utilisateur (doit retourner 403)
+DELETE {{baseUrl}}/attachments/{{attachmentId}}
+Authorization: Bearer {{otherToken}}
+
+### ✅ Delete attachment - admin peut supprimer n'importe quel fichier
+DELETE {{baseUrl}}/attachments/{{attachmentId}}
+Authorization: Bearer {{adminToken}}
+
+### ❌ Delete attachment - sans token (doit retourner 401)
+DELETE {{baseUrl}}/attachments/{{attachmentId}}

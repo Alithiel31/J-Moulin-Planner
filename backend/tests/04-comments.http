@@ -1,0 +1,92 @@
+@baseUrl = http://caesura:3005/api
+
+@adminToken = PASTE_ADMIN_TOKEN_HERE
+@authorToken = PASTE_AUTHOR_TOKEN_HERE
+@otherToken = PASTE_OTHER_USER_TOKEN_HERE
+@taskId = PASTE_TASK_ID_HERE
+@commentId = PASTE_COMMENT_ID_HERE
+
+
+### ✅ Get comments by task - nominal
+GET {{baseUrl}}/comments/task/{{taskId}}
+Authorization: Bearer {{authorToken}}
+
+### ❌ Get comments by task - sans token (doit retourner 401)
+GET {{baseUrl}}/comments/task/{{taskId}}
+
+### ✅ Create comment - nominal (logActivity déclenché)
+POST {{baseUrl}}/comments
+Authorization: Bearer {{authorToken}}
+Content-Type: application/json
+
+{
+  "taskId": "{{taskId}}",
+  "content": "Voici mon commentaire sur cette tâche."
+}
+
+### ❌ Create comment - contenu vide (doit retourner 400)
+POST {{baseUrl}}/comments
+Authorization: Bearer {{authorToken}}
+Content-Type: application/json
+
+{
+  "taskId": "{{taskId}}",
+  "content": ""
+}
+
+### ❌ Create comment - sans token (doit retourner 401)
+POST {{baseUrl}}/comments
+Content-Type: application/json
+
+{
+  "taskId": "{{taskId}}",
+  "content": "Commentaire anonyme"
+}
+
+### ✅ Update comment - auteur (nominal)
+PATCH {{baseUrl}}/comments/{{commentId}}
+Authorization: Bearer {{authorToken}}
+Content-Type: application/json
+
+{
+  "content": "Commentaire modifié."
+}
+
+### ❌ Update comment - autre utilisateur (doit retourner 403)
+PATCH {{baseUrl}}/comments/{{commentId}}
+Authorization: Bearer {{otherToken}}
+Content-Type: application/json
+
+{
+  "content": "Tentative de modification"
+}
+
+### ✅ Update comment - admin peut modifier n'importe quel commentaire
+PATCH {{baseUrl}}/comments/{{commentId}}
+Authorization: Bearer {{adminToken}}
+Content-Type: application/json
+
+{
+  "content": "Modifié par l'admin."
+}
+
+### ❌ Update comment - inexistant (doit retourner 404)
+PATCH {{baseUrl}}/comments/nonexistent-id
+Authorization: Bearer {{authorToken}}
+Content-Type: application/json
+
+{
+  "content": "Test"
+}
+
+### ✅ Delete comment - auteur (nominal, logActivity déclenché)
+DELETE {{baseUrl}}/comments/{{commentId}}
+Authorization: Bearer {{authorToken}}
+
+### ❌ Delete comment - autre utilisateur (doit retourner 403)
+DELETE {{baseUrl}}/comments/{{commentId}}
+Authorization: Bearer {{otherToken}}
+
+### ✅ Delete comment - admin peut supprimer n'importe quel commentaire
+DELETE {{baseUrl}}/comments/{{commentId}}
+Authorization: Bearer {{adminToken}}
