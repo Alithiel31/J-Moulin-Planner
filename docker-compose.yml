@@ -28,10 +28,9 @@ services:
       # Override DATABASE_URL : en Docker le host est le nom du service, pas localhost
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/j_moulin
       NODE_ENV: production
-      # Le navigateur accède au front via http://caesura:5173 (le Pi), pas localhost
-      CORS_ORIGIN: http://caesura:5173
-    ports:
-      - '3005:3000'
+      # Frontend et API partagent désormais la même origine via Nginx (caesura:8080).
+      # CORS_ORIGIN reste un garde-fou si le backend est appelé directement.
+      CORS_ORIGIN: http://caesura:8081
     depends_on:
       postgres:
         condition: service_healthy
@@ -46,17 +45,29 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        # VITE_API_URL est un build arg : Vite le bake dans le bundle JS à la compilation
-        VITE_API_URL: http://caesura:3005/api
+        # Même origine que l'API une fois derrière Nginx : /api relatif suffit
+        # (déjà le fallback par défaut dans src/lib/api.ts).
+        VITE_API_URL: /api
     container_name: j-moulin-frontend
     environment:
       NODE_ENV: production
-      # ORIGIN indique à adapter-node l'URL publique du frontend
-      ORIGIN: http://caesura:5173
-    ports:
-      - '5173:3000'
+      # ORIGIN indique à adapter-node l'URL publique du frontend, désormais servie par Nginx
+      ORIGIN: http://caesura:8081
     depends_on:
       - backend
+    networks:
+      - j-moulin-network
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: j-moulin-nginx
+    ports:
+      - '8081:80'
+    depends_on:
+      - backend
+      - frontend
     networks:
       - j-moulin-network
     restart: unless-stopped

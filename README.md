@@ -4,11 +4,12 @@ Outil de planification collaboratif avec gestion des rôles (Admin/TeamLead/Team
 
 ## Stack
 
-- **Frontend**: SvelteKit + Svelte 5 + Tailwind CSS
-- **Backend**: SvelteKit (+server.ts)
+- **Frontend**: SvelteKit + Svelte 5 + Tailwind CSS — PWA installable (`@vite-pwa/sveltekit`)
+- **Backend**: Express + TypeScript
 - **Database**: PostgreSQL + Prisma ORM
 - **Auth**: JWT + Argon2id password hashing
-- **Hosting**: Railway
+- **Hosting**: Docker Compose, auto-hébergé (Raspberry Pi), derrière un reverse proxy Nginx
+- **CI**: GitHub Actions (lint, typecheck, build, validation Docker)
 
 ## Rôles et Permissions
 
@@ -27,75 +28,39 @@ Outil de planification collaboratif avec gestion des rôles (Admin/TeamLead/Team
 - Filtrage sur ses tâches personnelles
 - Accès lecture seule
 
-## Déploiement sur Railway
+## Déploiement (Docker)
 
-### 1. Préparation du dépôt
+L'application tourne sur un **Raspberry Pi** (hostname `caesura`), via Docker Compose. Un conteneur **Nginx** fait office de point d'entrée unique : il sert de reverse proxy vers le frontend (SvelteKit / adapter-node) et vers le backend (`/api/*`), sur un seul port exposé.
+
+```
+navigateur → Nginx (:8081) ─┬─ /api/*  → backend  (Express, port interne 3000)
+                             └─ /*      → frontend (SvelteKit, port interne 3000)
+```
+
+### 1. Configurer l'environnement
 
 ```bash
-# Initialiser un repo Git
-git init
-git add .
-git commit -m "Initial commit: Planificateur J.Moulin"
-
-# Créer un repo sur GitHub et pusher
-git remote add origin https://github.com/ton-compte/planificateur-j-moulin.git
-git push -u origin main
+cp backend/.env.example backend/.env
+# Éditer backend/.env : DATABASE_URL, JWT_SECRET (32+ caractères en prod), etc.
 ```
 
-### 2. Créer une app Railway
+### 2. Lancer
 
 ```bash
-npm install -g @railway/cli
-railway login
-railway init
+docker compose up --build -d
 ```
 
-Ou depuis le dashboard Railway :
-1. Aller sur https://railway.app
-2. Créer un nouveau projet
-3. Connecter ton repo GitHub
+L'app est accessible sur `http://caesura:8081` (remplacer `caesura` par le hostname/IP réel du Pi sur ton réseau, ou via Tailscale).
 
-### 3. Configurer la base de données
+> Si l'app était déjà exposée publiquement (tunnel Cloudflare, port-forward routeur, etc.), il faut mettre à jour la cible pour pointer vers le port **8081** — les anciens ports 3005 (backend) et 5173 (frontend) ne sont plus exposés individuellement, tout passe désormais par Nginx.
 
-Sur Railway :
-1. Cliquer sur "+ Add Service"
-2. Sélectionner "PostgreSQL"
-3. Générer un nom auto ou personnalisé
+### 3. Migrations Prisma
 
-La `DATABASE_URL` sera automatiquement définie dans les variables d'environnement.
-
-### 4. Variables d'environnement
-
-Ajouter dans Railway (Variables) :
-
-```
-JWT_SECRET=your-secret-key-change-in-production
-NODE_ENV=production
-```
-
-Générer une clé JWT forte :
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-### 5. Déployer
-
-**Depuis le CLI :**
-```bash
-railway up
-```
-
-**Depuis GitHub :**
-- Railway détectera automatiquement l'app Svelte
-- Chaque push déclenchera un nouveau build et déploiement
-
-### 6. Migrations Prisma
-
-Les migrations se font automatiquement au déploiement grâce au Dockerfile qui exécute `prisma generate`.
+Le conteneur backend exécute `prisma db push` à chaque démarrage (`CMD` du Dockerfile) — les migrations de schéma sont donc appliquées automatiquement au déploiement.
 
 Pour les migrations manuelles :
 ```bash
-railway run npm run db:migrate
+docker compose exec backend npm run db:migrate
 ```
 
 ## Développement local
@@ -194,18 +159,19 @@ Pour popul vite :
 # TeamMate: charlie / password (assigné à "Frontend")
 ```
 
-## Dépannage Railway
-
-### Les build timeout
-- Augmenter le RAM alloué dans Railway
-- Vérifier les dépendances optionnelles (`optionalDependencies`)
+## Dépannage
 
 ### DB non accessible
-- Vérifier que PostgreSQL est déployée
-- Vérifier la `DATABASE_URL` dans les variables
+- Vérifier que le conteneur `postgres` est `healthy` : `docker compose ps`
+- Vérifier la `DATABASE_URL` dans `backend/.env`
 
-### JWT secret vide
-- S'assurer que `JWT_SECRET` est défini dans les variables Railway
+### JWT secret vide ou trop court
+- En production, le backend refuse de démarrer si `JWT_SECRET` fait moins de 32 caractères
+- Générer une clé forte : `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
+
+### 502 / 404 via Nginx
+- Vérifier que les conteneurs `backend` et `frontend` sont bien démarrés : `docker compose ps`
+- Vérifier les logs : `docker compose logs nginx backend frontend`
 
 ## Roadmap future
 
