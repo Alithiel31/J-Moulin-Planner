@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
-import { compat } from '@eslint/compat';
 
 export default [
   js.configs.recommended,
