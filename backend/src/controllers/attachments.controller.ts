@@ -44,8 +44,7 @@ export const attachmentsController = {
   upload: async (req: Request, res: Response) => {
     if (!req.user) throw new AuthorizationError();
 
-    const { taskId } = req.body;
-    if (!taskId) throw new Error('taskId is required');
+    const { taskId } = createAttachmentSchema.pick({ taskId: true }).parse(req.body);
 
     const task = await prisma.task.findUnique({ where: { id: taskId } });
     if (!task) throw new NotFoundError('Task');

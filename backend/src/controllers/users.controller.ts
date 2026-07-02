@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../lib/db';
 import { config } from '../config';
-import { NotFoundError, ValidationError, ConflictError } from '../lib/errors';
+import { NotFoundError, ConflictError } from '../lib/errors';
 
 const updateUserSchema = z.object({
   username: z.string().min(3).optional(),

@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { AppError } from '../lib/errors';
 import { logger } from '../lib/logger';
 
-export const errorHandler = (err: Error, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
   if (err instanceof z.ZodError) {
     return res.status(400).json({
       success: false,

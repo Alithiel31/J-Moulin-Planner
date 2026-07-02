@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../lib/db';
-import { NotFoundError, ValidationError, AuthorizationError } from '../lib/errors';
+import { NotFoundError, AuthorizationError } from '../lib/errors';
 import { logActivity } from '../lib/activity';
 
 const createCommentSchema = z.object({

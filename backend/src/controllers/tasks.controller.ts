@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../lib/db';
 import { config } from '../config';
-import { NotFoundError, ValidationError, AuthorizationError } from '../lib/errors';
+import { NotFoundError, AuthorizationError } from '../lib/errors';
 import { logActivity } from '../lib/activity';
 
 // Accept both full ISO datetime ("2026-05-22T00:00:00Z") and date-only ("2026-05-22")

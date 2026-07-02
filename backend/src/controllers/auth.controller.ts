@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { prisma } from '../lib/db';
 import { password } from '../lib/password';
 import { token } from '../lib/token';
-import { ValidationError, ConflictError, AuthenticationError, NotFoundError } from '../lib/errors';
+import { ConflictError, AuthenticationError } from '../lib/errors';
 
 const signupSchema = z.object({
   username: z.string().min(3).max(50),

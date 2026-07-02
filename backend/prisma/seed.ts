@@ -105,38 +105,6 @@ async function main() {
     },
   });
 
-  const task2 = await prisma.task.create({
-    data: {
-      title: 'Create database schema',
-      description: 'Design and implement Prisma schema for all entities',
-      category: 'Database',
-      priority: 'high',
-      status: 'done',
-      deadline: tomorrow,
-      createdById: admin.id,
-      teamId: team1.id,
-      assignees: {
-        create: [{ userId: user2.id }],
-      },
-    },
-  });
-
-  const task3 = await prisma.task.create({
-    data: {
-      title: 'Write API documentation',
-      description: 'Document all REST API endpoints',
-      category: 'Documentation',
-      priority: 'medium',
-      status: 'todo',
-      deadline: nextWeek,
-      createdById: lead.id,
-      teamId: team1.id,
-      assignees: {
-        create: [{ userId: user1.id }, { userId: user2.id }],
-      },
-    },
-  });
-
   // Create comments
   console.log('💬 Creating comments...');
   await prisma.comment.create({
