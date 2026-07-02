@@ -38,7 +38,7 @@
 </script>
 
 <aside
-	class="flex flex-col w-60 shrink-0 bg-slate-900 text-slate-100 h-screen sticky top-0 overflow-y-auto"
+	class="hidden md:flex flex-col w-60 shrink-0 bg-slate-900 text-slate-100 h-screen sticky top-0 overflow-y-auto"
 	aria-label="Navigation principale"
 >
 	<!-- Logo -->

@@ -6,6 +6,7 @@
 	import { Loader2 } from 'lucide-svelte';
 	import { auth } from '$lib/auth.svelte.js';
 	import Sidebar from '$lib/components/Sidebar.svelte';
+	import BottomNav from '$lib/components/BottomNav.svelte';
 	import { pwaInfo } from 'virtual:pwa-info';
 
 	let { children } = $props();
@@ -42,8 +43,9 @@
 {:else if auth.isAuthenticated}
 	<div class="flex min-h-screen bg-slate-50">
 		<Sidebar />
-		<main class="flex-1 px-6 py-8">
+		<main class="flex-1 px-4 py-6 pb-24 md:px-6 md:py-8 md:pb-8">
 			{@render children()}
 		</main>
 	</div>
+	<BottomNav />
 {/if}

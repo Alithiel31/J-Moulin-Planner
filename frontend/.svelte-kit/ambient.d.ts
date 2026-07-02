@@ -55,8 +55,6 @@ declare module '$env/static/private' {
 	export const EFC_9492_1592913036: string;
 	export const EFC_9492_4126798990: string;
 	export const EXEPATH: string;
-	export const GIT_EXEC_PATH: string;
-	export const GIT_PREFIX: string;
 	export const HOME: string;
 	export const HOMEDRIVE: string;
 	export const HOMEPATH: string;
@@ -244,8 +242,6 @@ declare module '$env/dynamic/private' {
 		EFC_9492_1592913036: string;
 		EFC_9492_4126798990: string;
 		EXEPATH: string;
-		GIT_EXEC_PATH: string;
-		GIT_PREFIX: string;
 		HOME: string;
 		HOMEDRIVE: string;
 		HOMEPATH: string;

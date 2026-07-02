@@ -10,6 +10,7 @@ const fr: Record<string, string> = {
 	'nav.events': 'Événements',
 	'nav.activity': "Journal d'activité",
 	'nav.timeline': 'Timeline',
+	'nav.more': 'Plus',
 	'nav.logout': 'Déconnexion',
 
 	'auth.login': 'Connexion',
@@ -125,6 +126,7 @@ const en: Record<string, string> = {
 	'nav.events': 'Events',
 	'nav.activity': 'Activity Log',
 	'nav.timeline': 'Timeline',
+	'nav.more': 'More',
 	'nav.logout': 'Logout',
 
 	'auth.login': 'Login',
