@@ -166,7 +166,7 @@
 					<p class="text-slate-400 text-sm">{$t('dashboard.no_recent_tasks')}</p>
 				{:else}
 					<ul class="space-y-1">
-						{#each recentTasks as task}
+						{#each recentTasks as task (task.id)}
 							<li>
 								<a
 									href="/tasks"
@@ -207,7 +207,7 @@
 						<p class="text-slate-400 text-sm">{$t('dashboard.no_upcoming_events')}</p>
 					{:else}
 						<ul class="space-y-0">
-							{#each upcomingEvents as event}
+							{#each upcomingEvents as event (event.id)}
 								<li class="flex flex-col gap-0.5 py-2 border-b border-slate-100 last:border-0">
 									<span class="text-sm font-medium text-slate-800">{event.title}</span>
 									<span class="text-xs text-slate-500">{formatDate(event.startDate)}</span>
@@ -230,7 +230,7 @@
 							</h2>
 						</div>
 						<ul class="space-y-1">
-							{#each teams.slice(0, 4) as team}
+							{#each teams.slice(0, 4) as team (team.id)}
 								<li class="flex items-center justify-between py-1">
 									<span class="text-sm font-medium text-slate-800">{team.name}</span>
 									<span class="text-xs text-slate-500">

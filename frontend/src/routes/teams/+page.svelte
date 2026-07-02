@@ -147,7 +147,7 @@
 		<p class="text-slate-400">{$t('teams.no_teams')}</p>
 	{:else}
 		<div class="space-y-3">
-			{#each teams as team}
+			{#each teams as team (team.id)}
 				<div class="card overflow-hidden">
 					<div class="flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors">
 						<div
@@ -212,7 +212,7 @@
 								{$t('teams.members')}
 							</h3>
 							<div class="flex flex-wrap gap-2">
-								{#each team.members as member}
+								{#each team.members as member (member.id)}
 									<span
 										class="flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 rounded-full text-sm text-slate-700"
 									>
@@ -236,7 +236,7 @@
 									{$t('nav.tasks')}
 								</h3>
 								<ul class="space-y-1">
-									{#each team.tasks.slice(0, 5) as task}
+									{#each team.tasks.slice(0, 5) as task (task.id)}
 										<li class="text-sm text-slate-700 flex items-center gap-2">
 											<span
 												class="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0"
@@ -302,7 +302,7 @@
 					<div>
 						<label class="label" for="team-lead">{$t('teams.lead')}</label>
 						<select id="team-lead" class="input" bind:value={formLeadId}>
-							{#each allUsers as user}
+							{#each allUsers as user (user.id)}
 								<option value={user.id}>{user.username} ({user.role})</option>
 							{/each}
 						</select>
@@ -311,7 +311,7 @@
 					<div>
 						<p class="label">{$t('teams.members')}</p>
 						<div class="flex flex-wrap gap-2 mt-1">
-							{#each allUsers as user}
+							{#each allUsers as user (user.id)}
 								<button
 									type="button"
 									onclick={() => toggleMember(user.id)}

@@ -170,7 +170,7 @@
 	{:else}
 		<!-- Kanban columns -->
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-			{#each columns as col}
+			{#each columns as col (col.status)}
 				<section aria-labelledby="col-{col.status}">
 					<!-- Column header -->
 					<div class="flex items-center gap-2 mb-3 px-1">
@@ -191,7 +191,7 @@
 								{$t('tasks.no_tasks')}
 							</div>
 						{:else}
-							{#each col.tasks as task}
+							{#each col.tasks as task (task.id)}
 								<article
 									class="card p-4 hover:shadow-md transition-shadow
 										{isOverdue(task) ? 'border-l-4 border-l-orange-400' : ''}"
@@ -252,7 +252,7 @@
 									<!-- Assignees -->
 									{#if task.assignees && task.assignees.length > 0}
 										<div class="flex items-center gap-1 mt-1" aria-label={$t('tasks.assignees')}>
-											{#each task.assignees.slice(0, 3) as a}
+											{#each task.assignees.slice(0, 3) as a (a.user.id)}
 												<span
 													class="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-xs font-bold"
 													title={a.user.username}
@@ -270,7 +270,7 @@
 									<!-- Move buttons (teamlead+) -->
 									{#if auth.isTeamLead}
 										<div class="flex gap-1 mt-3 flex-wrap">
-											{#each statuses.filter((s) => s !== task.status) as nextStatus}
+											{#each statuses.filter((s) => s !== task.status) as nextStatus (nextStatus)}
 												<button
 													onclick={() => moveTask(task, nextStatus)}
 													class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors"

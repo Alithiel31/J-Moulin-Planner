@@ -165,7 +165,7 @@
 					{$t('dashboard.upcoming_events')}
 				</h2>
 				<div class="space-y-2">
-					{#each upcoming as event}
+					{#each upcoming as event (event.id)}
 						<article class="card p-4 border-l-4 border-l-blue-400 flex items-start gap-4">
 							<div class="flex-shrink-0 text-center w-12">
 								<div class="text-xl font-bold text-blue-700 leading-none">
@@ -220,7 +220,7 @@
 					Passés
 				</h2>
 				<div class="space-y-2 opacity-70">
-					{#each past as event}
+					{#each past as event (event.id)}
 						<article class="card p-4 flex items-start gap-4">
 							<div class="flex-shrink-0 text-center w-12">
 								<div class="text-xl font-bold text-slate-400 leading-none">

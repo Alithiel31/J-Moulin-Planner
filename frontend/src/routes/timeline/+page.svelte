@@ -212,7 +212,7 @@
 				: 'bg-white text-gray-700 border-gray-300 hover:border-blue-400'}"
 			>{$t('timeline.all_teams')}</button
 		>
-		{#each teams as team}
+		{#each teams as team (team.id)}
 			<button
 				onclick={() => (selectedTeamId = team.id)}
 				class="px-4 py-1.5 text-sm rounded-full border transition-colors
@@ -236,7 +236,7 @@
 			<div class="flex border-b border-gray-300" style="min-width: 600px">
 				<div class="w-44 flex-shrink-0 bg-gray-100 border-r border-gray-300"></div>
 				<div class="flex-1 relative h-8 bg-gray-100">
-					{#each monthBlocks as block}
+					{#each monthBlocks as block (block.left)}
 						<div
 							class="absolute top-0 h-full flex items-center justify-center border-r border-gray-300 overflow-hidden"
 							style="left: {block.left}%; width: {block.width}%"
@@ -257,7 +257,7 @@
 					{$t('timeline.category')}
 				</div>
 				<div class="flex-1 relative h-6 bg-gray-50">
-					{#each weekMarks as mark}
+					{#each weekMarks as mark (mark.left)}
 						<div
 							class="absolute top-0 h-full border-l border-gray-200 flex items-center pl-0.5"
 							style="left: {mark.left}%"
@@ -275,7 +275,7 @@
 			</div>
 
 			<!-- Lignes par catégorie -->
-			{#each categories as cat}
+			{#each categories as cat (cat)}
 				<div
 					class="flex border-b border-gray-100 hover:bg-blue-50/30 transition-colors"
 					style="min-height: 52px; min-width: 600px"
@@ -288,7 +288,7 @@
 					<!-- Zone timeline -->
 					<div class="flex-1 relative" style="min-height: 52px;">
 						<!-- Gridlines semaine -->
-						{#each weekMarks as mark}
+						{#each weekMarks as mark (mark.left)}
 							<div
 								class="absolute top-0 h-full border-l border-gray-100 pointer-events-none"
 								style="left: {mark.left}%"
@@ -304,7 +304,7 @@
 						{/if}
 
 						<!-- Événements (bandes roses) -->
-						{#each filteredEvents as ev}
+						{#each filteredEvents as ev (ev.id)}
 							{@const evLeft = pct(ev.startDate)}
 							{@const evW = widthPct(ev.startDate, ev.endDate)}
 							{#if evLeft + evW >= 0 && evLeft <= 100}
@@ -319,7 +319,7 @@
 						{/each}
 
 						<!-- Barres de tâches -->
-						{#each tasksByCategory[cat] as task}
+						{#each tasksByCategory[cat] as task (task.id)}
 							{@const left = getBarLeft(task)}
 							{@const width = getBarWidth(task)}
 							{#if left + width >= 0 && left <= 100}

@@ -204,7 +204,7 @@
 						<div>
 							<label class="label" for="task-team">{$t('tasks.team')}</label>
 							<select id="task-team" class="input" bind:value={form.teamId}>
-								{#each teams as team}
+								{#each teams as team (team.id)}
 									<option value={team.id}>{team.name}</option>
 								{/each}
 							</select>
@@ -252,7 +252,7 @@
 					<div>
 						<p class="label">{$t('tasks.assignees')}</p>
 						<div class="flex flex-wrap gap-2 mt-1">
-							{#each teamMembers as member}
+							{#each teamMembers as member (member.id)}
 								<button
 									type="button"
 									onclick={() => toggleAssignee(member.id)}

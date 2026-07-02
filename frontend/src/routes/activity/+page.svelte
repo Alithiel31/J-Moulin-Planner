@@ -72,7 +72,7 @@
 	{:else}
 		<div class="card overflow-hidden">
 			<ul aria-label={$t('nav.activity')}>
-				{#each logs as log, i}
+				{#each logs as log, i (log.id)}
 					<li
 						class="flex items-start gap-4 px-4 py-3 {i !== logs.length - 1
 							? 'border-b border-slate-100'

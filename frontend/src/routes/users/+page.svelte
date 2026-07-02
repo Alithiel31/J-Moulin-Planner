@@ -103,7 +103,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each users as user}
+					{#each users as user (user.id)}
 						<tr class="border-b border-slate-100 last:border-0 hover:bg-slate-50">
 							<td class="px-4 py-3">
 								<div class="flex items-center gap-2">
@@ -130,7 +130,7 @@
 										disabled={savingId === user.id}
 										aria-label="{$t('users.role')} {user.username}"
 									>
-										{#each roles as r}
+										{#each roles as r (r)}
 											<option value={r}>{$t(`users.role.${r}`)}</option>
 										{/each}
 									</select>

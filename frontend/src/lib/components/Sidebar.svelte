@@ -48,7 +48,7 @@
 
 	<!-- Main nav -->
 	<nav class="flex-1 px-3 py-4 space-y-1" aria-label="Menu principal">
-		{#each navItems as item}
+		{#each navItems as item (item.href)}
 			{#if item.always || (item.teamlead && auth.isTeamLead)}
 				<a
 					href={item.href}
@@ -67,7 +67,7 @@
 		{#if auth.isAdmin}
 			<div class="pt-4">
 				<p class="px-3 mb-1 text-xs font-semibold text-slate-500 uppercase tracking-wider">Admin</p>
-				{#each adminItems as item}
+				{#each adminItems as item (item.href)}
 					<a
 						href={item.href}
 						class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
