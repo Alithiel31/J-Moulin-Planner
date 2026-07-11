@@ -6,6 +6,7 @@ import { prisma } from '../lib/db';
 import { config } from '../config';
 import { NotFoundError, AuthorizationError } from '../lib/errors';
 import { logActivity } from '../lib/activity';
+import { canAccessTask } from '../lib/task-access';
 
 const createAttachmentSchema = z.object({
   taskId: z.string(),
@@ -14,10 +15,14 @@ const createAttachmentSchema = z.object({
 
 export const attachmentsController = {
   getByTaskId: async (req: Request, res: Response) => {
+    if (!req.user) throw new AuthorizationError();
+
     const { taskId } = req.params;
 
     const task = await prisma.task.findUnique({ where: { id: taskId } });
     if (!task) throw new NotFoundError('Task');
+
+    if (!(await canAccessTask(req.user, taskId))) throw new AuthorizationError();
 
     const attachments = await prisma.attachment.findMany({
       where: { taskId },
@@ -29,6 +34,8 @@ export const attachmentsController = {
   },
 
   getById: async (req: Request, res: Response) => {
+    if (!req.user) throw new AuthorizationError();
+
     const { id } = req.params;
 
     const attachment = await prisma.attachment.findUnique({
@@ -37,6 +44,8 @@ export const attachmentsController = {
     });
 
     if (!attachment) throw new NotFoundError('Attachment');
+
+    if (!(await canAccessTask(req.user, attachment.taskId))) throw new AuthorizationError();
 
     res.json({ success: true, data: { attachment } });
   },
@@ -48,6 +57,8 @@ export const attachmentsController = {
 
     const task = await prisma.task.findUnique({ where: { id: taskId } });
     if (!task) throw new NotFoundError('Task');
+
+    if (!(await canAccessTask(req.user, taskId))) throw new AuthorizationError();
 
     if (!req.file) throw new Error('No file provided');
 

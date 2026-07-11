@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { prisma } from '../lib/db';
 import { NotFoundError, AuthorizationError } from '../lib/errors';
 import { logActivity } from '../lib/activity';
+import { canAccessTask } from '../lib/task-access';
 
 const createCommentSchema = z.object({
   taskId: z.string(),
@@ -15,7 +16,14 @@ const updateCommentSchema = z.object({
 
 export const commentsController = {
   getByTaskId: async (req: Request, res: Response) => {
+    if (!req.user) throw new AuthorizationError();
+
     const { taskId } = req.params;
+
+    const task = await prisma.task.findUnique({ where: { id: taskId } });
+    if (!task) throw new NotFoundError('Task');
+
+    if (!(await canAccessTask(req.user, taskId))) throw new AuthorizationError();
 
     const comments = await prisma.comment.findMany({
       where: { taskId },
@@ -30,6 +38,11 @@ export const commentsController = {
     if (!req.user) throw new AuthorizationError();
 
     const body = createCommentSchema.parse(req.body);
+
+    const task = await prisma.task.findUnique({ where: { id: body.taskId } });
+    if (!task) throw new NotFoundError('Task');
+
+    if (!(await canAccessTask(req.user, body.taskId))) throw new AuthorizationError();
 
     const comment = await prisma.comment.create({
       data: {

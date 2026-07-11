@@ -4,6 +4,7 @@ import { prisma } from '../lib/db';
 import { config } from '../config';
 import { NotFoundError, AuthorizationError } from '../lib/errors';
 import { logActivity } from '../lib/activity';
+import { canWriteTask } from '../lib/task-access';
 
 // Accept both full ISO datetime ("2026-05-22T00:00:00Z") and date-only ("2026-05-22")
 const isoDatetime = z
@@ -102,8 +103,18 @@ export const tasksController = {
 
   create: async (req: Request, res: Response) => {
     if (!req.user) throw new AuthorizationError();
+    if (req.user.role === 'teammate') {
+      throw new AuthorizationError('TeamMates have read-only access and cannot create tasks');
+    }
 
     const body = createTaskSchema.parse(req.body);
+
+    if (req.user.role === 'teamlead' && body.teamId) {
+      const team = await prisma.team.findFirst({
+        where: { id: body.teamId, leadId: req.user.userId },
+      });
+      if (!team) throw new AuthorizationError('Cannot assign tasks to a team you do not lead');
+    }
 
     const task = await prisma.task.create({
       data: {
@@ -132,6 +143,20 @@ export const tasksController = {
 
     const { id } = req.params;
     const body = updateTaskSchema.parse(req.body);
+
+    const existing = await prisma.task.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundError('Task');
+
+    if (!(await canWriteTask(req.user, id))) {
+      throw new AuthorizationError('Cannot modify this task');
+    }
+
+    if (req.user.role === 'teamlead' && body.teamId) {
+      const team = await prisma.team.findFirst({
+        where: { id: body.teamId, leadId: req.user.userId },
+      });
+      if (!team) throw new AuthorizationError('Cannot assign tasks to a team you do not lead');
+    }
 
     const task = await prisma.task.update({
       where: { id },
@@ -163,6 +188,10 @@ export const tasksController = {
 
     const task = await prisma.task.findUnique({ where: { id } });
     if (!task) throw new NotFoundError('Task');
+
+    if (!(await canWriteTask(req.user, id))) {
+      throw new AuthorizationError('Cannot delete this task');
+    }
 
     await prisma.task.delete({ where: { id } });
 
