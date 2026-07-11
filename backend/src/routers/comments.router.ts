@@ -5,7 +5,7 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 
 const router = Router();
 
-router.get('/task/:taskId', asyncHandler(commentsController.getByTaskId));
+router.get('/task/:taskId', authMiddleware, asyncHandler(commentsController.getByTaskId));
 router.post('/', authMiddleware, asyncHandler(commentsController.create));
 router.patch('/:id', authMiddleware, asyncHandler(commentsController.update));
 router.delete('/:id', authMiddleware, asyncHandler(commentsController.delete));
